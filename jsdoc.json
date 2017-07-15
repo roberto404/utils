@@ -1,0 +1,14 @@
+{
+  "source": {
+    "include": ["./src/math", "./src/geometry", "./src/models"],
+    "includePattern": ".*\\.js(doc)?$"
+  },
+  "opts": {
+      "encoding": "utf8",
+      "recurse": true,
+      "private": false,
+      "lenient": true,
+      "destination": "./docs",
+      "template": "node_modules/minami"
+  }
+}
