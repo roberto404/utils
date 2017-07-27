@@ -18,7 +18,6 @@
     "prebuild:prod": "npm run clean",
     "build": "webpack --env.dev",
     "build:prod": "webpack --env.prod -p",
-    "commit": "git-cz",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
@@ -71,9 +70,9 @@
   "config": {
     "ghooks": {
       "pre-commit": "npm run validate"
+    },
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
     }
-  },
-  "czConfig": {
-    "path": "node_modules/cz-conventional-changelog"
   }
 }
