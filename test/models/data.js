@@ -101,6 +101,9 @@ describe('Model: Data:', () =>
     dataModel.order = { column: 'id', direction: 'desc' }
     dataModel.results.should.to.deep.equal(sampleData.reverse());
 
+    dataModel.order = { column: 'id' };
+    dataModel.results.should.to.deep.equal(sampleData);
+
     done();
   });
 

@@ -120,16 +120,22 @@ class Data
 
     const order = _.clone(this._order);
 
-    if (settings.column !== this._order.column &&
+    if (!settings.direction && settings.column === order.column)
+    {
+      order.direction = +!DIRECTIONS.indexOf(order.direction);
+    }
+    else if (
+      settings.direction !== this.order.direction
+      && DIRECTIONS.indexOf(settings.direction) !== -1
+    )
+    {
+      order.direction = settings.direction;
+    }
+
+    if (settings.column !== order.column &&
         Object.keys(this.data[0]).indexOf(settings.column) !== -1)
     {
       order.column = settings.column;
-    }
-
-    if (settings.direction !== this.order.direction &&
-        DIRECTIONS.indexOf(settings.direction) !== -1)
-    {
-      order.direction = settings.direction;
     }
 
     if (!_.isEqual(order, this.order))
@@ -500,4 +506,4 @@ class Data
   }
 }
 
-module.exports = Data;
+export default Data;
