@@ -1,4 +1,4 @@
-import { chain, forIn, isEmpty, isEqual, slice, clone, findIndex } from 'lodash';
+import { chain, forIn, isEmpty, isEqual, slice, findIndex } from 'lodash';
 
 const _ =
   {
@@ -7,7 +7,6 @@ const _ =
     isEmpty,
     isEqual,
     slice,
-    clone,
     findIndex,
   };
 
@@ -41,9 +40,9 @@ class Data
       return false;
     }
 
-    this._data = _.clone(data);
+    this._data = data;
 
-    this._results = _.clone(this._data);
+    this._results = this._data.concat([]);
 
     this._order =
     {
@@ -118,11 +117,11 @@ class Data
       return;
     }
 
-    const order = _.clone(this._order);
+    const order = Object.assign({}, this._order);
 
     if (!settings.direction && settings.column === order.column)
     {
-      order.direction = +!DIRECTIONS.indexOf(order.direction);
+      order.direction = DIRECTIONS[+!DIRECTIONS.indexOf(order.direction)];
     }
     else if (
       settings.direction !== this.order.direction
@@ -130,6 +129,11 @@ class Data
     )
     {
       order.direction = settings.direction;
+    }
+
+    if (!order.direction)
+    {
+      order.direction = DIRECTIONS[0];
     }
 
     if (settings.column !== order.column &&
@@ -232,36 +236,55 @@ class Data
 
   set paginate(options = {})
   {
+    this._paginate = this._pagination(options);
+  }
+
+  /* !- Private methods */
+
+  /**
+   * Pagination
+   *
+   * @private
+   * @return {void}
+   */
+  _pagination(options)
+  {
     if (typeof options !== 'object')
     {
-      return;
+      return this._paginate;
     }
+
+    const paginate = Object.assign({}, this._paginate, options);
 
     if (typeof options.limit === 'number')
     {
-      this._paginate.limit = options.limit;
+      paginate.limit = options.limit;
     }
 
-    this._paginate.total = this._results.length;
-    this._paginate.totalPage = Math.ceil(this._paginate.total / this._paginate.limit);
+    paginate.total = this._results.length;
+    paginate.totalPage = Math.ceil(paginate.total / paginate.limit);
 
     if (typeof options.page === 'number' &&
         options.page > 0 &&
-        options.page <= this._paginate.totalPage)
+        options.page <= paginate.totalPage)
     {
-      this._paginate.page = Math.ceil(options.page);
+      paginate.page = Math.ceil(options.page);
+    }
+    else
+    {
+      paginate.page = this._paginate.page;
     }
 
-    const offset = (this._paginate.page - 1) * this._paginate.limit;
+    const offset = (paginate.page - 1) * paginate.limit;
 
-    this._paginate.results = _.slice(this._results, offset, offset + this._paginate.limit);
-    this._paginate.nextPage = (this._paginate.page < this._paginate.totalPage)
-      ? this._paginate.page + 1 : false;
-    this._paginate.prevPage = (this._paginate.page > 1)
-      ? this._paginate.page - 1 : false;
+    paginate.results = _.slice(this._results, offset, offset + paginate.limit);
+    paginate.nextPage = (paginate.page < paginate.totalPage)
+      ? paginate.page + 1 : false;
+    paginate.prevPage = (paginate.page > 1)
+      ? paginate.page - 1 : false;
+
+    return paginate;
   }
-
-  /* !- Public methods */
 
   /**
    * Sorting _results object by key (alias column) and directions
@@ -428,7 +451,7 @@ class Data
   */
   handle()
   {
-    this._results = _.clone(this._data);
+    this._results = this._data.concat([]);
 
     if (!_.isEmpty(this.filters))
     {
@@ -436,6 +459,8 @@ class Data
     }
 
     this._sort();
+
+    this._paginate = this._pagination(this._paginate);
   }
 
 

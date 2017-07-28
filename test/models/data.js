@@ -1,5 +1,6 @@
 import { expect, should } from 'chai';
 import { findIndex, clone } from 'lodash';
+import deepFreeze from 'deep-freeze';
 import { Data } from '../../src/models'
 
 should();
@@ -43,6 +44,8 @@ const sampleData = [
   },
 ];
 
+deepFreeze(sampleData);
+
 let dataModel;
 
 describe('Model: Data:', () =>
@@ -74,9 +77,9 @@ describe('Model: Data:', () =>
     done();
   });
 
-  it('Failed set order', (done) =>
+  it('Failed set order', () =>
   {
-    const results = clone(dataModel.results);
+    const results = dataModel.results;
 
     // invalid order type: array
     dataModel.order = ['111', '222'];
@@ -99,12 +102,11 @@ describe('Model: Data:', () =>
 
     // order by integer
     dataModel.order = { column: 'id', direction: 'desc' }
-    dataModel.results.should.to.deep.equal(sampleData.reverse());
+    dataModel.results.should.to.deep.equal(sampleData.concat([]).reverse());
+
 
     dataModel.order = { column: 'id' };
     dataModel.results.should.to.deep.equal(sampleData);
-
-    done();
   });
 
   it('Filter', (done) =>
