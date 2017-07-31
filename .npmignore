@@ -1,0 +1,15 @@
+#tests
+test
+coverage
+
+#build tools
+.travis.yml
+.babelrc
+webpack.config.js
+jsdoc.json
+
+#linters
+.eslintrc*
+
+#editor settings
+.editorconfig
