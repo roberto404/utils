@@ -20,12 +20,12 @@ const FILTER_SCHEME =
   };
 
 /**
-* Helper to Data grid
-* Object transforms: paginate, sort, filters
-*
-* @since 1.0.0
-* @class
-*/
+ * Helper to Data grid
+ * Object transforms: paginate, sort, filters
+ *
+ * @since 1.0.0
+ * @class
+ */
 class Data
 {
   /**

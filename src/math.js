@@ -3,7 +3,7 @@
  * @namespace math
  */
 
-import clamp from './clamp';
+import clamp from './math/clamp';
 
 export { clamp };
 

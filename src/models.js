@@ -2,7 +2,7 @@
  * @fileOverview Model utilities
  */
 
-import Data from './data';
+import Data from './models/data';
 
 export { Data };
 

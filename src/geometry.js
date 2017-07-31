@@ -3,8 +3,8 @@
  * @namespace geometry
  */
 
-import deg2rad from './deg2rad';
-import getDistanceFromLatLonInKm from './getDistanceFromLatLonInKm';
+import deg2rad from './geometry/deg2rad';
+import getDistanceFromLatLonInKm from './geometry/getDistanceFromLatLonInKm';
 
 export { deg2rad, getDistanceFromLatLonInKm };
 
