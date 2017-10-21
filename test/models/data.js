@@ -1,7 +1,7 @@
 import { expect, should } from 'chai';
-import { findIndex, clone } from 'lodash';
+import { findIndex, clone, chain } from 'lodash';
 import deepFreeze from 'deep-freeze';
-import { Data } from '../../src/models'
+import { Data } from '../../src/models';
 
 should();
 

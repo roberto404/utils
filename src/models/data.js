@@ -1,14 +1,8 @@
-import { chain, forIn, isEmpty, isEqual, slice, findIndex } from 'lodash';
-
-const _ =
-  {
-    chain,
-    forIn,
-    isEmpty,
-    isEqual,
-    slice,
-    findIndex,
-  };
+import forIn from 'lodash/forIn';
+import isEmpty from 'lodash/isEmpty';
+import isEqual from 'lodash/isEqual';
+import groupBy from 'lodash/groupBy';
+import map from 'lodash/map';
 
 const DIRECTIONS = ['asc', 'desc'];
 const FILTER_SCHEME =
@@ -148,7 +142,7 @@ class Data
 
   set order(settings)
   {
-    if (_.isEmpty(settings))
+    if (isEmpty(settings))
     {
       return;
     }
@@ -178,7 +172,7 @@ class Data
       order.column = settings.column;
     }
 
-    if (!_.isEqual(order, this.order))
+    if (!isEqual(order, this.order))
     {
       this._order = order;
       this.handle();
@@ -223,7 +217,7 @@ class Data
 
     filters.forEach((filter) =>
     {
-      const filterIndex = _.findIndex(this.filters, { id: filter.id });
+      const filterIndex = this.filters.findIndex(f => f.id === filter.id);
 
       if (filterIndex === -1)
       {
@@ -232,7 +226,7 @@ class Data
           modified = true;
         }
       }
-      else if (!filter.arguments || _.isEmpty(filter.arguments))
+      else if (!filter.arguments || isEmpty(filter.arguments))
       {
         if (this._inactiveFilterByIndex(filterIndex))
         {
@@ -313,7 +307,7 @@ class Data
 
     const offset = (paginate.page - 1) * paginate.limit;
 
-    paginate.results = _.slice(this._results, offset, offset + paginate.limit);
+    paginate.results = this._results.slice(offset, offset + paginate.limit);
     paginate.nextPage = (paginate.page < paginate.totalPage)
       ? paginate.page + 1 : false;
     paginate.prevPage = (paginate.page > 1)
@@ -395,7 +389,7 @@ class Data
   {
     const newFilter = {};
 
-    _.forIn(FILTER_SCHEME, (value, key) =>
+    forIn(FILTER_SCHEME, (value, key) =>
     {
       if (typeof filter[key] === value)
       {
@@ -403,7 +397,7 @@ class Data
       }
     });
 
-    if (!_.isEmpty(newFilter))
+    if (!isEmpty(newFilter))
     {
       this._filters.push(newFilter);
       return true;
@@ -443,7 +437,7 @@ class Data
     let modified = false;
     const newFilter = this._filters[index];
 
-    _.forIn(newFilter, (value, key) =>
+    forIn(newFilter, (value, key) =>
     {
       if (typeof filter[key] === typeof value)
       {
@@ -489,7 +483,7 @@ class Data
   {
     this._results = this._data.concat([]);
 
-    if (!_.isEmpty(this.filters))
+    if (!isEmpty(this.filters))
     {
       this._filter();
     }
@@ -551,19 +545,18 @@ class Data
   */
   getResultsGroupBy(
     field,
-    valueIteratee = groupRecords => groupRecords.length,
     labelIteratee = (groupRecords, groupField) => groupField,
+    valueIteratee = groupRecords => groupRecords.length,
   )
   {
-    return _
-        .chain(this.results)
-        .groupBy(x => x[field])
-        .map((groupRecords, groupField) =>
-        ({
-          label: labelIteratee(groupRecords, groupField),
-          value: valueIteratee(groupRecords, groupField),
-        }))
-        .value();
+    return map(
+      groupBy(this.results, x => x[field]),
+      (groupRecords, groupField) =>
+      ({
+        label: labelIteratee(groupRecords, groupField),
+        value: valueIteratee(groupRecords, groupField),
+      }),
+    );
   }
 }
 
