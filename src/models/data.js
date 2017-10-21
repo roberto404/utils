@@ -32,6 +32,42 @@ class Data
    * @constructs
    * @param  {Object} data     full data Object
    * @param  {Object} [settings]
+   * @example
+   // data
+
+   [
+     { id: 1, name: 'Megan J. Cushman', gender: 1, visits: '2017-07-23' },
+     { id: 2, name: 'Taylor R. Fallin', gender: 2, visits: '2017-07-22' },
+     { id: 3, name: 'Jose C. Rosado', gender: 1, visits: '2017-07-20' },
+     { id: 4, name: 'Sammy C. Brandt', gender: 1, visits: '2017-07-10' },
+   ];
+
+   // settings
+
+   {
+     paginate:
+     {
+       limit: 2,
+     },
+     order:
+     {
+       column: 'name',
+       direction: 'desc',
+     },
+     filters:
+     [
+       {
+         id: 'search',
+         handler: (record, value) =>
+           record.name
+             .toString()
+             .toLowerCase()
+             .indexOf(value.toString().toLowerCase()) >= 0,
+         arguments: [],
+         status: false,
+       },
+     ],
+   };
    */
   constructor(data, settings = {})
   {

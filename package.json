@@ -15,10 +15,13 @@
     "test:watch": "npm t -- -w",
     "test:coverage": "nyc npm t && nyc report --reporter=lcov",
     "docs": "node_modules/.bin/jsdoc -c jsdoc.json",
+    "docs2": "node_modules/.bin/documentation build ./src/*/*.js -f md --shallow -o DOCS.md --github",
     "prebuild": "npm run clean",
     "prebuild:prod": "npm run clean",
     "build": "webpack --env.dev",
     "build:prod": "webpack --env.prod -p",
+    "prewatch": "npm run build",
+    "watch": "node_modules/.bin/webpack-dev-server --env.dev",
     "commit": "git-cz",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
@@ -51,6 +54,7 @@
     "commitizen": "2.9.6",
     "cz-conventional-changelog": "2.0.0",
     "deep-freeze": "0.0.1",
+    "documentation": "5.0.1",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^15.0.2",
     "eslint-plugin-babel": "^4.1.1",
@@ -65,7 +69,7 @@
     "rimraf": "^2.6.1",
     "semantic-release": "^6.3.6",
     "webpack": "^2.6.1",
-    "webpack-dev-server": "^2.4.5",
+    "webpack-dev-server": "2.9.3",
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {

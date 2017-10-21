@@ -58,7 +58,7 @@ module.exports = (env) =>
         contentBase: PATHS.dist,
         compress: true,
         port: 9000,
-        public: 'test.loc:9000',
+        public: 'localhost:9000',
       },
     },
   ]);
