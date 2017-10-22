@@ -7,14 +7,14 @@ notifications:
 node_js:
   - '8'
   - '4'
-before_install:
-  - cp $TRAVIS_BUILD_DIR/package.json $TRAVIS_BUILD_DIR/src/package.json
-  - cd $TRAVIS_BUILD_DIR/src
 before_script:
   - npm prune
 script:
   - npm run validate
 after_success:
+  - cp $TRAVIS_BUILD_DIR/package.json $TRAVIS_BUILD_DIR/src/package.json
+  - mv $TRAVIS_BUILD_DIR/coverage/ $TRAVIS_BUILD_DIR/src/
+  - cd $TRAVIS_BUILD_DIR/src
   - npm run semantic-release
   - npm run report:coverage
 branches:
