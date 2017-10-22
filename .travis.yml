@@ -15,6 +15,7 @@ after_success:
   - npm run semantic-release
   - npm run report:coverage
 before_deploy:
+  - cp package.json src/
   - cd src
 branches:
   except:
