@@ -15,8 +15,6 @@ script:
 after_success:
   - npm run semantic-release
   - npm run report:coverage
-before_deploy:
-  - cd src
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
