@@ -1,9 +1,11 @@
 #tests
 test
 coverage
+.nyc_output
 
 #build tools
-srv
+src
+.tern-project
 .travis.yml
 .babelrc
 webpack.config.js

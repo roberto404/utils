@@ -22,6 +22,7 @@
     "build:prod": "webpack --env.prod -p",
     "prewatch": "npm run build",
     "watch": "node_modules/.bin/webpack-dev-server --env.dev",
+    "precommit": "npm run validate",
     "commit": "git-cz",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
@@ -61,7 +62,7 @@
     "eslint-plugin-import": "^2.7.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.1.0",
-    "ghooks": "2.0.0",
+    "husky": "0.14.3",
     "minami": "^1.2.3",
     "mocha": "^3.4.2",
     "nyc": "^11.0.3",
@@ -75,9 +76,6 @@
     "lodash": "^4.17.4"
   },
   "config": {
-    "ghooks": {
-      "pre-commit": "npm run validate"
-    },
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
