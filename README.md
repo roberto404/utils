@@ -13,7 +13,7 @@ $ npm i --save @1studio/utils
 
 Example (ES6):
 ```javascript
-import { getDistanceFromLatLonIn } from '@1studio/utils/geometry';
+import { getDistanceFromLatLonInKm } from '@1studio/utils/geometry';
 
 const distance = getDistanceFromLatLonInKm(47.4925, 19.0513, 40.71448, -74.00598);
 // Budapest <-> New York distance in km
