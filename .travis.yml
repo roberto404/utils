@@ -12,10 +12,7 @@ before_script:
 script:
   - npm run validate
 after_success:
-  - cp $TRAVIS_BUILD_DIR/package.json $TRAVIS_BUILD_DIR/src/package.json
-  - mv $TRAVIS_BUILD_DIR/coverage/ $TRAVIS_BUILD_DIR/src/
-  - cd $TRAVIS_BUILD_DIR/src
-  - npm i semantic-release
+  - cp -r $TRAVIS_BUILD_DIR/src/* $TRAVIS_BUILD_DIR/
   - npm run semantic-release
 branches:
   except:
