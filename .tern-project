@@ -7,7 +7,7 @@
     "./src/**/*.js"
   ],
   "dontLoad": [
-    "node_modules/**",
+    "node_modules/**"
   ],
   "plugins": {
     "es_modules": {},

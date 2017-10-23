@@ -12,9 +12,10 @@ before_script:
 script:
   - npm run validate
 after_success:
-  - cp -r $TRAVIS_BUILD_DIR/src/* $TRAVIS_BUILD_DIR/
-  - npm run semantic-release
   - npm run report:coverage
+  - cp -r $TRAVIS_BUILD_DIR/src/* $TRAVIS_BUILD_DIR/
+  - rm -rf $TRAVIS_BUILD_DIR/src
+  - npm run semantic-release
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/

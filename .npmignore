@@ -9,7 +9,6 @@ src
 .travis.yml
 .babelrc
 webpack.config.js
-jsdoc.json
 package-lock.json
 
 #linters
