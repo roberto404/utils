@@ -1,8 +1,8 @@
 {
-  "presets": ["es2015"],
+  "presets": ["env"],
   "env": {
     "production": {
-      "presets": ["babili"]
+      "presets": ["babel-minify"]
     }
   }
 }

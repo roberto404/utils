@@ -5,3 +5,4 @@ coverage
 coverage.lcov
 docs
 build
+package-lock.json
