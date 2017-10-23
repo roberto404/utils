@@ -3,6 +3,7 @@ test
 coverage
 
 #build tools
+srv
 .travis.yml
 .babelrc
 webpack.config.js
