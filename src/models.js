@@ -1,5 +1,6 @@
 /**
  * @fileOverview Model utilities
+ * @namespace models
  */
 
 import Data from './models/data';

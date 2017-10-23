@@ -5,9 +5,8 @@ should();
 
 describe('distance', () =>
 {
-  it('Calculate', (done) =>
+  it('Calculate', () =>
   {
     distance({ x: 1, y: 1 }, { x: 2, y: 2 }).should.to.equal(Math.sqrt(2));
-    done();
   });
 });

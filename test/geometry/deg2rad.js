@@ -5,9 +5,8 @@ should();
 
 describe('deg2rad', () =>
 {
-  it('Calculate', (done) =>
+  it('Calculate', () =>
   {
     deg2rad(180).should.to.equal(Math.PI);
-    done();
   });
 });

@@ -5,7 +5,7 @@ should();
 
 describe('pointInRect', () =>
 {
-  it('Observe', (done) =>
+  it('Observe', () =>
   {
     pointInRect(
       { x: 1, y: 1 },
@@ -24,7 +24,5 @@ describe('pointInRect', () =>
       { x: 1, y: 2 },
       { x: 3, y: 2 },
     ).should.to.equal(true);
-
-    done();
   });
 });

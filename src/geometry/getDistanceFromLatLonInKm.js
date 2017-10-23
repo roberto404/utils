@@ -1,6 +1,3 @@
-/**
- * @requires geometry/deg2rad
- */
 import deg2rad from './deg2rad';
 
 /**
@@ -15,10 +12,10 @@ const R = 6371;
 /**
  * Calculate distance two  geographic coordinates
  * Decimal (World Geodetic System WGS84)
- * This class requires the modules {@link geometry/deg2rad}
  *
  * @static
  * @memberof geometry
+ * @requires deg2rad
  * @param  {int} lat1   From GPS latitude
  * @param  {int} lon1   From GPS longitude
  * @param  {int} lat2   To GPS latitude

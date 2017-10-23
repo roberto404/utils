@@ -3,12 +3,15 @@
 ### Table of Contents
 
 -   [geometry](#geometry)
-    -   [deg2rad](#deg2rad-1)
+    -   [deg2rad](#deg2rad)
     -   [getDistanceFromLatLonInKm](#getdistancefromlatloninkm)
+    -   [distance](#distance)
+    -   [pointInRect](#pointinrect)
+    -   [twoLineIntersection](#twolineintersection)
 -   [math](#math)
     -   [clamp](#clamp)
+-   [models](#models)
 -   [Data](#data)
-    -   [constructor](#constructor)
     -   [data](#data-1)
     -   [results](#results)
     -   [order](#order)
@@ -19,11 +22,13 @@
     -   [getResultByIndex](#getresultbyindex)
     -   [getResultsGroupBy](#getresultsgroupby)
 
+## geometry
 
+[src/geometry.js:6-6](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/geometry.js#L6-L6 "Source code on GitHub")
 
 ### deg2rad
 
-[src/geometry/deg2rad.js:14-14](https://github.com/roberto404/utils/blob/5b78d93132ac422b7374e979773bbb50560bce86/src/geometry/deg2rad.js#L14-L14 "Source code on GitHub")
+[src/geometry/deg2rad.js:14-14](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/geometry/deg2rad.js#L14-L14 "Source code on GitHub")
 
 Convert degree to radian
 
@@ -46,11 +51,10 @@ Returns **int** radian
 
 ### getDistanceFromLatLonInKm
 
-[src/geometry/getDistanceFromLatLonInKm.js:34-46](https://github.com/roberto404/utils/blob/5b78d93132ac422b7374e979773bbb50560bce86/src/geometry/getDistanceFromLatLonInKm.js#L34-L46 "Source code on GitHub")
+[src/geometry/getDistanceFromLatLonInKm.js:31-43](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/geometry/getDistanceFromLatLonInKm.js#L31-L43 "Source code on GitHub")
 
 Calculate distance two  geographic coordinates
 Decimal (World Geodetic System WGS84)
-This class requires the modules [geometry/deg2rad](geometry/deg2rad)
 
 **Parameters**
 
@@ -69,13 +73,97 @@ getDistanceFromLatLonInKm(47.4925, 19.0513, 40.71448, -74.00598);
 
 Returns **int** distance in km
 
+### distance
+
+[src/geometry/distance.js:15-18](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/geometry/distance.js#L15-L18 "Source code on GitHub")
+
+Calculate distance two coordinate points
+
+**Parameters**
+
+-   `a` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** coordinate point
+-   `b` **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** coordinate point
+
+**Examples**
+
+```javascript
+distance({ x: 1, y: 1 }, { x: 2, y: 2 });
+// => 1.4142135623730951
+```
+
+Returns **int** 
+
+**Meta**
+
+-   **since**: 1.2.0
+
+### pointInRect
+
+[src/geometry/pointInRect.js:20-22](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/geometry/pointInRect.js#L20-L22 "Source code on GitHub")
+
+Check a point is inside of a rectangle
+
+**Parameters**
+
+-   `a` **\[[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)]** observed point
+-   `b` **\[[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)]** rectangle top left corner
+-   `c` **\[[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)]** rectangle bottom right corner
+
+**Examples**
+
+```javascript
+pointInRect(
+{ x: 1, y: 1 },
+{ x: 1, y: 2 },
+{ x: 1, y: 4 },
+)
+// => false
+```
+
+Returns **bool** 
+
+**Meta**
+
+-   **since**: 1.2.0
+
+### twoLineIntersection
+
+[src/geometry/twoLineIntersection.js:24-53](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/geometry/twoLineIntersection.js#L24-L53 "Source code on GitHub")
+
+Intersection of two lines
+
+**Parameters**
+
+-   `a1`  
+-   `a2`  
+-   `b1`  
+-   `b2`  
+
+**Examples**
+
+```javascript
+twoLineIntersection(
+{ x: 5, y: 10 },
+{ x: 5, y: 1 },
+{ x: 1, y: 5 },
+{ x: 10, y: 5 },
+)
+// => { x: 5, y: 5 }
+```
+
+Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** Intersection point coorinate
+
+**Meta**
+
+-   **since**: 1.2.0
+
 ## math
 
-[src/math/index.js:6-6](https://github.com/roberto404/utils/blob/5b78d93132ac422b7374e979773bbb50560bce86/src/math/index.js#L6-L6 "Source code on GitHub")
+[src/math.js:6-6](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/math.js#L6-L6 "Source code on GitHub")
 
 ### clamp
 
-[src/math/clamp.js:17-23](https://github.com/roberto404/utils/blob/5b78d93132ac422b7374e979773bbb50560bce86/src/math/clamp.js#L17-L23 "Source code on GitHub")
+[src/math/clamp.js:17-23](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/math/clamp.js#L17-L23 "Source code on GitHub")
 
 Clamping is the process of limiting a position to an area.
 Interval two value (min -> {x} &lt;- max)
@@ -99,9 +187,13 @@ Returns **int** value among min and max
 
 -   **since**: 1.0.0
 
+## models
+
+[src/models.js:6-6](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/models.js#L6-L6 "Source code on GitHub")
+
 ## Data
 
-[src/models/data.js:29-532](https://github.com/roberto404/utils/blob/5b78d93132ac422b7374e979773bbb50560bce86/src/models/data.js#L29-L532 "Source code on GitHub")
+[src/models/data.js:58-564](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/models/data.js#L58-L564 "Source code on GitHub")
 
 Helper to Data grid
 Object transforms: paginate, sort, filters
@@ -111,46 +203,79 @@ Object transforms: paginate, sort, filters
 -   `data`  
 -   `settings`   (optional, default `{}`)
 
+**Examples**
+
+```javascript
+// data
+[
+  { id: 1, name: 'Megan J. Cushman', gender: 1, visits: '2017-07-23' },
+  { id: 2, name: 'Taylor R. Fallin', gender: 2, visits: '2017-07-22' },
+  { id: 3, name: 'Jose C. Rosado', gender: 1, visits: '2017-07-20' },
+  { id: 4, name: 'Sammy C. Brandt', gender: 1, visits: '2017-07-10' },
+];
+
+// settings
+
+{
+  paginate:
+  {
+    limit: 2,
+  },
+  order:
+  {
+    column: 'name',
+    direction: 'desc',
+  },
+  filters:
+  [
+    {
+      id: 'search',
+      handler: (record, value) =>
+        record.name
+          .toString()
+          .toLowerCase()
+          .indexOf(value.toString().toLowerCase()) >= 0,
+      arguments: [],
+      status: false,
+    },
+  ],
+};
+```
+
 **Meta**
 
 -   **since**: 1.0.0
 
-### constructor
-
-[src/models/data.js:36-68](https://github.com/roberto404/utils/blob/5b78d93132ac422b7374e979773bbb50560bce86/src/models/data.js#L36-L68 "Source code on GitHub")
-
-**Parameters**
-
--   `data` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** full data Object
--   `settings` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)?**  (optional, default `{}`)
-
 ### data
 
-[src/models/data.js:76-79](https://github.com/roberto404/utils/blob/5b78d93132ac422b7374e979773bbb50560bce86/src/models/data.js#L76-L79 "Source code on GitHub")
+[src/models/data.js:106-109](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/models/data.js#L106-L109 "Source code on GitHub")
 
 Raw data.
 
 ### results
 
-[src/models/data.js:91-94](https://github.com/roberto404/utils/blob/5b78d93132ac422b7374e979773bbb50560bce86/src/models/data.js#L91-L94 "Source code on GitHub")
+[src/models/data.js:121-124](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/models/data.js#L121-L124 "Source code on GitHub")
 
 Handled data results.
 
 ### order
 
-[src/models/data.js:108-111](https://github.com/roberto404/utils/blob/5b78d93132ac422b7374e979773bbb50560bce86/src/models/data.js#L108-L111 "Source code on GitHub")
+[src/models/data.js:141-144](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/models/data.js#L141-L144 "Source code on GitHub")
 
 Current order settings
 
 **Examples**
 
 ```javascript
-{column: 'name', direction: 'asc'}
+const data = new Data(json);
+
+data.order = {column: 'name', direction: 'asc'};
+// => data.results
 ```
 
 ### filters
 
-[src/models/data.js:169-172](https://github.com/roberto404/utils/blob/5b78d93132ac422b7374e979773bbb50560bce86/src/models/data.js#L169-L172 "Source code on GitHub")
+[src/models/data.js:202-205](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/models/data.js#L202-L205 "Source code on GitHub")
 
 Filter Collections
 
@@ -172,7 +297,7 @@ data.filters = [
 
 ### paginate
 
-[src/models/data.js:232-235](https://github.com/roberto404/utils/blob/5b78d93132ac422b7374e979773bbb50560bce86/src/models/data.js#L232-L235 "Source code on GitHub")
+[src/models/data.js:265-268](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/models/data.js#L265-L268 "Source code on GitHub")
 
 Current order settings
 
@@ -191,50 +316,50 @@ data.paginate = {
 
 ### handle
 
-[src/models/data.js:452-464](https://github.com/roberto404/utils/blob/5b78d93132ac422b7374e979773bbb50560bce86/src/models/data.js#L452-L464 "Source code on GitHub")
+[src/models/data.js:485-497](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/models/data.js#L485-L497 "Source code on GitHub")
 
 Data handling process -> this.results
 
 -   apply filters
 -   sort results
 
-Returns **void**
+Returns **void** 
 
 ### getDataByIndex
 
-[src/models/data.js:472-480](https://github.com/roberto404/utils/blob/5b78d93132ac422b7374e979773bbb50560bce86/src/models/data.js#L472-L480 "Source code on GitHub")
+[src/models/data.js:505-513](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/models/data.js#L505-L513 "Source code on GitHub")
 
 Return data element by index
 
 **Parameters**
 
--   `index` **int**
+-   `index` **int** 
 
-Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)**
+Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
 
 ### getResultByIndex
 
-[src/models/data.js:488-496](https://github.com/roberto404/utils/blob/5b78d93132ac422b7374e979773bbb50560bce86/src/models/data.js#L488-L496 "Source code on GitHub")
+[src/models/data.js:521-529](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/models/data.js#L521-L529 "Source code on GitHub")
 
 Return results element by index
 
 **Parameters**
 
--   `index` **int**
+-   `index` **int** 
 
-Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)**
+Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** 
 
 ### getResultsGroupBy
 
-[src/models/data.js:516-531](https://github.com/roberto404/utils/blob/5b78d93132ac422b7374e979773bbb50560bce86/src/models/data.js#L516-L531 "Source code on GitHub")
+[src/models/data.js:549-563](https://github.com/roberto404/utils/blob/ecf7dc2a1790a7e32ced8e6cc44324ccad6f9e75/src/models/data.js#L549-L563 "Source code on GitHub")
 
 It returns grouped results
 
 **Parameters**
 
 -   `field` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** grouping result by this object key
--   `valueIteratee` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** group field items method. Default is count group elements (optional, default `(records,field)`)
 -   `labelIteratee` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** group field value format method. Default return original value (optional, default `(records,field)`)
+-   `valueIteratee` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** group field items method. Default is count group elements (optional, default `(records,field)`)
 
 **Examples**
 
