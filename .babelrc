@@ -1,5 +1,12 @@
 {
-  "presets": ["env"],
+  "presets": ["flow", ["env", {
+    "targets": {
+      "node": "4",
+      "browsers": "last 2 versions, ie 10"
+    },
+    "useBuiltIns": true
+  }]],
+  "plugins": ["transform-class-properties"],
   "env": {
     "production": {
       "presets": ["babel-minify"]

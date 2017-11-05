@@ -1,3 +1,5 @@
+// @flow
+
 /**
  * @fileOverview Model utilities
  * @namespace models

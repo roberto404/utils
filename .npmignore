@@ -16,3 +16,5 @@ package-lock.json
 
 #editor settings
 .editorconfig
+
+examples

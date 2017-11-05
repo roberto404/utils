@@ -1,3 +1,5 @@
+// @flow
+
 /**
  * @fileOverview Geometry utilities
  * @namespace geometry

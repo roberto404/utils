@@ -1,3 +1,5 @@
+// @flow
+
 /**
  * Calculate distance two coordinate points
  *
@@ -12,9 +14,13 @@
  * distance({ x: 1, y: 1 }, { x: 2, y: 2 });
  * // => 1.4142135623730951
  */
-const distance = (a, b) =>
+const distance = (
+  pointA: { x: number, y: number },
+  pointB: { x: number, y: number },
+): number =>
   Math.sqrt(
-    ((b.x - a.x) * (b.x - a.x)) + ((b.y - a.y) * (b.y - a.y)),
+    ((pointB.x - pointA.x) * (pointB.x - pointA.x)) +
+    ((pointB.y - pointA.y) * (pointB.y - pointA.y)),
   );
 
 export default distance;

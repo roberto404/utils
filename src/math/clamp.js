@@ -1,3 +1,5 @@
+// @flow
+
 /**
  * Clamping is the process of limiting a position to an area.
  * Interval two value (min -> {x} <- max)
@@ -14,7 +16,11 @@
  * clamp(10, 15, 20);
  * // => 15
  */
-const clamp = (value, min, max) =>
+const clamp = (
+  value: number,
+  min: number,
+  max: number,
+): number =>
 {
   const maxValue = max || value;
   const minValue = min || maxValue;

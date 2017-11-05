@@ -146,6 +146,10 @@ describe('Model: Data:', () =>
     dataModel.filters = { id: 'hexcolor' };
     dataModel.results.length.should.to.equal(sampleData.length);
 
+    // missing filter handler
+    dataModel.filters = [{ id: 'missing', status: true, arguments: [1] }]
+    dataModel.filters = [{ id: 'hexcolor', status: true, arguments: [firstChar] }]
+
     done();
   });
 

@@ -1,3 +1,5 @@
+// @flow
+
 import pointInRect from './pointInRect';
 
 /**
@@ -21,7 +23,12 @@ import pointInRect from './pointInRect';
  )
  // => { x: 5, y: 5 }
  */
-const twoLineIntersection = (a1, a2, b1, b2) =>
+const twoLineIntersection = (
+  a1: { x: number, y: number },
+  a2: { x: number, y: number },
+  b1: { x: number, y: number },
+  b2: { x: number, y: number },
+): { x: number, y: number } | null =>
 {
   const dax = (a1.x - a2.x);
   const dbx = (b1.x - b2.x);

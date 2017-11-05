@@ -1,3 +1,5 @@
+// @flow
+
 import geometry from './geometry';
 import math from './math';
 import models from './models';

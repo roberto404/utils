@@ -1,17 +1,23 @@
+// @flow
+
+import PropTypes from 'prop-types';
+import checkPropTypes from 'check-prop-types';
 import forIn from 'lodash/forIn';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 import groupBy from 'lodash/groupBy';
 import map from 'lodash/map';
 
+import type { dataType, orderType, filterType, paginateType } from './data.type';
+
 const DIRECTIONS = ['asc', 'desc'];
-const FILTER_SCHEME =
-  {
-    id: 'string',
-    handler: 'function',
-    arguments: 'object',
-    status: 'boolean',
-  };
+const FILTER_SCHEMA = {
+  id: PropTypes.string.isRequired,
+  handler: PropTypes.func.isRequired,
+  arguments: PropTypes.arrayOf(PropTypes.string),
+  status: PropTypes.bool.isRequired,
+};
+
 
 /**
  * Helper to Data grid
@@ -57,13 +63,27 @@ const FILTER_SCHEME =
  */
 class Data
 {
+  _data: dataType;
+  _results: dataType = [];
+  _order: orderType;
+  _filters: filterType[];
+  _paginate: paginateType;
+
+
   /**
    * @constructs
    * @private
    * @param  {Object} data     full data Object
    * @param  {Object} [settings]
    */
-  constructor(data, settings = {})
+  constructor(
+    data: dataType,
+    settings?: {
+      order?: orderType,
+      filters?: Array<filterType>,
+      paginate?: paginateType,
+    } = {},
+  )
   {
     if (data === undefined || typeof settings !== typeof {})
     {
@@ -76,7 +96,7 @@ class Data
 
     this._order =
     {
-      column: null,
+      column: '',
       direction: 'asc', // asc || desc
     };
 
@@ -86,15 +106,15 @@ class Data
     {
       page: 1,
       limit: 20,
-      totalPage: null,
+      totalPage: 0,
       results: null,
       nextPage: null,
       prevPage: null,
     };
 
     this.order = settings.order || {};
-    this.filters = settings.filters || {};
-    this.paginate = settings.paginate || {};
+    this.filters = settings.filters || [];
+    this.paginate = settings.paginate || { page: 1 };
   }
 
   /* !- Getter Setter */
@@ -103,12 +123,12 @@ class Data
    * Raw data.
    * @type {array}
    */
-  get data()
+  get data(): dataType
   {
     return this._data;
   }
 
-  set data(data)
+  set data(data: dataType)
   {
     this._data = data;
     this.handle();
@@ -118,12 +138,12 @@ class Data
    * Handled data results.
    * @type {array}
    */
-  get results()
+  get results(): dataType
   {
     return this._results;
   }
 
-  set results(results)
+  set results(results: dataType)
   {
     this._results = results;
   }
@@ -138,12 +158,12 @@ class Data
    * data.order = {column: 'name', direction: 'asc'};
    * // => data.results
    */
-  get order()
+  get order(): orderType
   {
     return this._order;
   }
 
-  set order(settings)
+  set order(settings: orderType)
   {
     if (isEmpty(settings))
     {
@@ -199,24 +219,17 @@ class Data
    *
    * // => data.results
    */
-  get filters()
+  get filters(): filterType[]
   {
     return this._filters;
   }
 
-  set filters(newFilters)
+  set filters(newFilters: filterType[] | filterType)
   {
-    let filters = [];
-    let modified = false;
+    const filters = (Array.isArray(newFilters)) ?
+      newFilters : [newFilters];
 
-    if (newFilters.length === undefined)
-    {
-      filters = [newFilters];
-    }
-    else
-    {
-      filters = newFilters;
-    }
+    let modified = false;
 
     filters.forEach((filter) =>
     {
@@ -224,10 +237,7 @@ class Data
 
       if (filterIndex === -1)
       {
-        if (this._registerNewFilter(filter))
-        {
-          modified = true;
-        }
+        modified = this._registerNewFilter(filter);
       }
       else if (!filter.arguments || isEmpty(filter.arguments))
       {
@@ -262,14 +272,17 @@ class Data
    *
    * // => data.paginate.results
    */
-  get paginate()
+  get paginate(): paginateType
   {
     return this._paginate;
   }
 
-  set paginate(options = {})
+  set paginate(options: paginateType)
   {
-    this._paginate = this._pagination(options);
+    if (!isEmpty(options))
+    {
+      this._paginate = this._pagination(options);
+    }
   }
 
   /* !- Private methods */
@@ -280,7 +293,7 @@ class Data
    * @private
    * @return {void}
    */
-  _pagination(options)
+  _pagination(options: paginateType): paginateType
   {
     if (typeof options !== 'object')
     {
@@ -312,9 +325,9 @@ class Data
 
     paginate.results = this._results.slice(offset, offset + paginate.limit);
     paginate.nextPage = (paginate.page < paginate.totalPage)
-      ? paginate.page + 1 : false;
+      ? paginate.page + 1 : null;
     paginate.prevPage = (paginate.page > 1)
-      ? paginate.page - 1 : false;
+      ? paginate.page - 1 : null;
 
     return paginate;
   }
@@ -330,10 +343,14 @@ class Data
    */
   _sort()
   {
-    if (this.order.column !== null)
+    if (this.order.column)
     {
       this._results.sort((recordOne, recordTwo) =>
       {
+        if (typeof this.order.column === 'undefined')
+        {
+          return 1;
+        }
         const a = recordOne[this.order.column];
         const b = recordTwo[this.order.column];
 
@@ -388,25 +405,22 @@ class Data
    * @param  {object} filter
    * @return {boolean} successfull of registration
    */
-  _registerNewFilter(filter)
+  _registerNewFilter(filter: filterType): boolean
   {
-    const newFilter = {};
+    const result = checkPropTypes(
+      FILTER_SCHEMA,
+      filter,
+      'filter',
+      'Data',
+    );
 
-    forIn(FILTER_SCHEME, (value, key) =>
+    if (result)
     {
-      if (typeof filter[key] === value)
-      {
-        newFilter[key] = filter[key];
-      }
-    });
-
-    if (!isEmpty(newFilter))
-    {
-      this._filters.push(newFilter);
-      return true;
+      return false;
     }
 
-    return false;
+    this._filters.push(filter);
+    return true;
   }
 
   /**
@@ -416,7 +430,7 @@ class Data
    * @param  {int} index
    * @return {bool} true
    */
-  _inactiveFilterByIndex(index)
+  _inactiveFilterByIndex(index: number): boolean
   {
     if (!this._filters[index])
     {
@@ -435,7 +449,7 @@ class Data
    * @param  {object} filter new filter properties
    * @return {boolean} successfull of update process
    */
-  _updateFilterByIndex(index, filter)
+  _updateFilterByIndex(index: number, filter: filterType): boolean
   {
     let modified = false;
     const newFilter = this._filters[index];
@@ -482,7 +496,7 @@ class Data
   *
   * @return {void}
   */
-  handle()
+  handle(): void
   {
     this._results = this._data.concat([]);
 
@@ -502,7 +516,7 @@ class Data
    * @param  {int} index
    * @return {object}
    */
-  getDataByIndex(index)
+  getDataByIndex(index: number): {} | boolean
   {
     if (typeof this._data[index] === 'undefined')
     {
@@ -518,7 +532,7 @@ class Data
    * @param  {int} index
    * @return {object}
    */
-  getResultByIndex(index)
+  getResultByIndex(index: number): {} | boolean
   {
     if (typeof this.results[index] === 'undefined')
     {
@@ -547,10 +561,12 @@ class Data
   * @return {object}          {'group1': ineratee return, 'group2': valueIteratee return}
   */
   getResultsGroupBy(
-    field,
-    labelIteratee = (groupRecords, groupField) => groupField,
-    valueIteratee = groupRecords => groupRecords.length,
-  )
+    field: string,
+    labelIteratee?: (groupRecords: dataType, groupField: string) => string
+      = (groupRecords, groupField) => groupField,
+    valueIteratee?: (groupRecords: dataType, groupField: string) => number
+      = groupRecords => groupRecords.length,
+  ): Array<{ label: string, value: number }>
   {
     return map(
       groupBy(this.results, x => x[field]),

@@ -1,3 +1,5 @@
+// @flow
+
 /**
  * Check a point is inside of a rectangle
  *
@@ -17,8 +19,17 @@
  )
  // => false
  */
- const pointInRect = (a, b, c) =>
-    (a.x >= Math.min(b.x, c.x) && a.x <= Math.max(b.x, c.x)
-    && a.y >= Math.min(b.y, c.y) && a.y <= Math.max(b.y, c.y));
+ const pointInRect =
+ (
+   point: { x: number, y: number },
+   lineTopLeft: { x: number, y: number },
+   lineBottomRight: { x: number, y: number },
+ ): bool =>
+    (
+      point.x >= Math.min(lineTopLeft.x, lineBottomRight.x)
+      && point.x <= Math.max(lineTopLeft.x, lineBottomRight.x)
+      && point.y >= Math.min(lineTopLeft.y, lineBottomRight.y)
+      && point.y <= Math.max(lineTopLeft.y, lineBottomRight.y)
+    );
 
  export default pointInRect;

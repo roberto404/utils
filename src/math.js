@@ -1,3 +1,5 @@
+// @flow
+
 /**
  * @fileOverview Mathematical utilities
  * @namespace math

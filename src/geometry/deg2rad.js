@@ -1,3 +1,5 @@
+// @flow
+
 /**
  * Convert degree to radian
  *
@@ -11,6 +13,6 @@
  * deg2rad(180);
  * // => Math.PI
  */
-const deg2rad = deg => deg * (Math.PI / 180);
+const deg2rad = (deg: number): number => deg * (Math.PI / 180);
 
 export default deg2rad;
