@@ -14,6 +14,7 @@
     "start": "webpack-dev-server --open --progress --hot --color --env.dev",
     "test": "mocha",
     "test:watch": "npm t -- -w",
+    "test:debug": "npm t -- -w --inspect-brk",
     "test:coverage": "nyc npm t && nyc report --reporter=lcov",
     "docs": "node_modules/.bin/documentation build ./src/index.js -f md -o MANUAL.md --github",
     "docs:view": "node_modules/.bin/documentation serve --watch ./src/index.js",

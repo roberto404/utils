@@ -25,6 +25,8 @@ const FILTER_SCHEMA = {
  *
  * @since 1.0.0
  * @class
+ * @param  {Object} data     full data Object
+ * @param  {Object} [settings]
  * @example
  * // data
  * [
@@ -558,6 +560,15 @@ class Data
   * // return {'2016-02-03': 22, '2016-02-04': 25 }
   * groupByResults('date', (value, key) => (_.sum(_.map(value, i => parseInt(i.person)))))
   *
+  * // grouping by category where the value max id each group
+  *
+  * dataModel.getResultsGroupBy(
+  *   'category',
+  *   undefined,
+  *   records => Math.max(...records.map(record => record['id'])),
+  * )
+  *
+  *
   * @return {object}          {'group1': ineratee return, 'group2': valueIteratee return}
   */
   getResultsGroupBy(
@@ -566,16 +577,56 @@ class Data
       = (groupRecords, groupField) => groupField,
     valueIteratee?: (groupRecords: dataType, groupField: string) => number
       = groupRecords => groupRecords.length,
-  ): Array<{ label: string, value: number }>
+  ): Array<{ id: string, title: number }>
   {
     return map(
       groupBy(this.results, x => x[field]),
       (groupRecords, groupField) =>
       ({
-        label: labelIteratee(groupRecords, groupField),
-        value: valueIteratee(groupRecords, groupField),
+        id: labelIteratee(groupRecords, groupField),
+        title: valueIteratee(groupRecords, groupField),
       }),
     );
+  }
+
+  /**
+   * Calculate a PivotTable about the data filtered _results
+   * @param  {string} column Observed record field
+   * @param  {function} method this method get an array results -> column value
+   * @param  {string} [group]  other column which unique values showes each observed field value
+   * @return {number|object}
+   * @example
+   * dataModel.getPivotTable('category', count)
+   * // -> 7
+   *
+   * dataModel.getPivotTable('id', max, 'category')
+   * // ->[
+   *  { id: 'A', title: 4 },
+   *  { id: 'B', title: 5 },
+   *  { id: 'undefined', title: 7 },
+   *  { id: 'max', title: 7 },
+   * ]
+   */
+  getPivotTable(column: string, method: Function, group?: string)
+  {
+    let result = [];
+    const data = this.results.map(record => record[column]);
+
+    if (group)
+    {
+      result = this.getResultsGroupBy(
+        group,
+        undefined,
+        records => method(records.map(record => record[column])),
+      );
+    }
+
+    result.push({
+      id: method.name,
+      title: method(data),
+    });
+
+    return (result.length === 1) ? result[0].title : result;
   }
 }
 
