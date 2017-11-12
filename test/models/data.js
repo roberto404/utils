@@ -195,7 +195,7 @@ describe('Model: Data:', () =>
   it('PivotTable', () =>
   {
     dataModel.getPivotTable('id', sum).should.to.equal(28);
-    dataModel.getPivotTable('category', count).should.to.equal(7);
+    dataModel.getPivotTable('category', count).should.to.equal(5);
     dataModel.getPivotTable('category', countUnique).should.to.equal(2);
     dataModel.getPivotTable('id', mean).should.to.equal(28 / 7);
     dataModel.getPivotTable('id', max).should.to.equal(7);
@@ -210,5 +210,16 @@ describe('Model: Data:', () =>
       { id: 'undefined', title: 7 },
       { id: 'max', title: 7 },
     ]);
-  })
+  });
+
+  it('PivotTable only method', () =>
+  {
+    dataModel.getPivotTable(countUnique).should.to.deep.equal({
+      id: 7,
+      color: 7,
+      value: 7,
+      category: 2,
+    });
+  });
+
 });

@@ -62,6 +62,8 @@ const FILTER_SCHEMA = {
  *     },
  *   ],
  * };
+ *
+ * new Data(data, settings);
  */
 class Data
 {
@@ -353,10 +355,10 @@ class Data
         {
           return 1;
         }
-        const a = recordOne[this.order.column];
-        const b = recordTwo[this.order.column];
+        const a = recordOne[this.order.column] || '';
+        const b = recordTwo[this.order.column] || '';
 
-        if (!isNaN(a))
+        if (!isNaN(a) && !isNaN(b))
         {
           return (parseInt(a) < parseInt(b)) ? -1 : 1;
         }
@@ -595,38 +597,89 @@ class Data
    * @param  {function} method this method get an array results -> column value
    * @param  {string} [group]  other column which unique values showes each observed field value
    * @return {number|object}
+   * @since 3.2.0
    * @example
-   * dataModel.getPivotTable('category', count)
-   * // -> 7
+   * dataModel.getPivotTable('gender', countUnique)
+   * // -> 2
    *
-   * dataModel.getPivotTable('id', max, 'category')
+   * dataModel.getPivotTable('visits', max, 'gender')
    * // ->[
-   *  { id: 'A', title: 4 },
-   *  { id: 'B', title: 5 },
-   *  { id: 'undefined', title: 7 },
-   *  { id: 'max', title: 7 },
+   *  { id: '1', title: '2017-07-23' },
+   *  { id: '2', title: '2017-07-22' },
+   *  { id: 'max', title: '2017-07-23' },
    * ]
+   *
+   * data.getPivotTable(countUnique)
+   * // ->
+   * { id: 4, name: 4, gender: 2, visits: 4 }
    */
-  getPivotTable(column: string, method: Function, group?: string)
+  getPivotTable(propColumn: string|Function, propMethod?: Function, group?: string)
   {
-    let result = [];
-    const data = this.results.map(record => record[column]);
-
-    if (group)
+    if (typeof propColumn === 'undefined')
     {
-      result = this.getResultsGroupBy(
-        group,
-        undefined,
-        records => method(records.map(record => record[column])),
-      );
+      return null;
     }
 
-    result.push({
-      id: method.name,
-      title: method(data),
-    });
+    if (typeof propColumn === 'string' && typeof propMethod === 'function')
+    {
+      const column = propColumn;
+      const method = propMethod;
 
-    return (result.length === 1) ? result[0].title : result;
+      const collectData = data =>
+        data.reduce(
+          (result, record) =>
+          {
+            const value = record[column];
+
+            if (typeof value !== 'undefined')
+            {
+              result.push(
+                isNaN(value) ? value : parseFloat(value),
+              );
+            }
+
+            return result;
+          },
+          [],
+        );
+
+      const data = collectData(this.results);
+
+      let results = [];
+
+      if (group)
+      {
+        results = this.getResultsGroupBy(
+          group,
+          undefined,
+          records => method(records.map(record => record[column])),
+        );
+      }
+
+      results.push({
+        id: method.name,
+        title: data.length ? method(data) : 0,
+      });
+
+      return (results.length === 1) ? results[0].title : results;
+    }
+    else if (typeof propColumn === 'function')
+    {
+      const method = propColumn;
+      const columns = Object.keys(this.results[0]);
+
+      return columns.reduce(
+        (result, column) =>
+        {
+          const newResult = result;
+
+          newResult[column] = this.getPivotTable(column, method);
+          return newResult;
+        },
+        {},
+      );
+    }
+    return null;
   }
 }
 
