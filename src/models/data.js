@@ -357,7 +357,7 @@ class Data
         // number
         if (!isNaN(a) && !isNaN(b))
         {
-          return +(a > b);
+          return +(a >= b);
         }
 
         // string
