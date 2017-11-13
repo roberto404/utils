@@ -351,18 +351,16 @@ class Data
     {
       this._results.sort((recordOne, recordTwo) =>
       {
-        if (typeof this.order.column === 'undefined')
-        {
-          return 1;
-        }
         const a = recordOne[this.order.column] || '';
         const b = recordTwo[this.order.column] || '';
 
+        // number
         if (!isNaN(a) && !isNaN(b))
         {
-          return (parseInt(a) < parseInt(b)) ? -1 : 1;
+          return +(a > b);
         }
 
+        // string
         return a.toLowerCase().localeCompare(b.toLowerCase());
       });
 
