@@ -7,6 +7,7 @@ import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 import groupBy from 'lodash/groupBy';
 import map from 'lodash/map';
+import sort from '../array/sort';
 
 import type { dataType, orderType, filterType, paginateType } from './data.type';
 
@@ -349,25 +350,23 @@ class Data
   {
     if (this.order.column)
     {
-      this._results.sort((recordOne, recordTwo) =>
+      this._results = sort(this._results, (left, rigth) =>
       {
-        const a = recordOne[this.order.column] || '';
-        const b = recordTwo[this.order.column] || '';
+        const a = left[this.order.column] || '';
+        const b = rigth[this.order.column] || '';
+
+        const ifReverse = (result: number): number =>
+          (result + (+(this.order.direction !== 'asc'))) % 2;
 
         // number
         if (!isNaN(a) && !isNaN(b))
         {
-          return +(a >= b);
+          return ifReverse(+(a >= b));
         }
 
         // string
-        return a.toLowerCase().localeCompare(b.toLowerCase());
+        return ifReverse(a.toLowerCase().localeCompare(b.toLowerCase()));
       });
-
-      if (this.order.direction !== 'asc')
-      {
-        this._results.reverse();
-      }
     }
   }
 

@@ -5,4 +5,4 @@ import * as utils from './index';
  * @type {Object}
  */
 
-global.utils = utils;
+global.utils = utils.default;

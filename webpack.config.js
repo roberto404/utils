@@ -18,7 +18,7 @@ const PATHS = {
 const Common = {
   context: PATHS.src,
   entry: {
-    app: './index.global.js',
+    app: './build.js',
   },
   output: {
     filename: 'utils.js',
