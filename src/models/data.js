@@ -361,7 +361,7 @@ class Data
         // number
         if (!isNaN(a) && !isNaN(b))
         {
-          return ifReverse(+(a >= b));
+          return ifReverse(+(parseFloat(a) >= parseFloat(b)));
         }
 
         // string
