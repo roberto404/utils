@@ -203,6 +203,7 @@ class Data
     if (!isEqual(order, this.order))
     {
       this._order = order;
+      this._paginate = this._pagination({ page: 1 });
       this.handle();
     }
   }
