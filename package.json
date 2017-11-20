@@ -36,7 +36,10 @@
     "utils",
     "utilities",
     "math",
-    "geometry"
+    "geometry",
+    "capitalizeFirstLetter",
+    "array sort",
+    "propTypes"
   ],
   "author": "Robert Gulyas <robert@1studio.hu> (http://www.1studio.hu/)",
   "license": "BSD-3-Clause",
@@ -81,7 +84,6 @@
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
-    "check-prop-types": "1.1.1",
     "lodash": "^4.17.4",
     "prop-types": "15.6.0"
   },

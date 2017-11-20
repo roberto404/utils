@@ -68,6 +68,18 @@ let dataModel;
 
 describe('Model: Data:', () =>
 {
+  const env = process.env.NODE_ENV;
+
+  before(() =>
+  {
+    process.env.NODE_ENV = 'production';
+  });
+
+  after(() =>
+  {
+    process.env.NODE_ENV = env;
+  });
+
   beforeEach(() =>
   {
     dataModel = new Data(sampleData);

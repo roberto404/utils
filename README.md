@@ -50,6 +50,15 @@ const distance = getDistanceFromLatLonInKm(47.4925, 19.0513, 40.71448, -74.00598
 // Budapest <-> New York distance in km
 ```
 
+Example (direct import):
+```javascript
+import checkPropTypes from '@1studio/utils/propType/checkPropTypes'
+
+checkPropTypes('string', PropTypes.number);
+// -> [errors]
+```
+
+
 Example (Flow):
 ```javascript
 // @flow

@@ -1,13 +1,13 @@
 // @flow
 
 import PropTypes from 'prop-types';
-import checkPropTypes from 'check-prop-types';
 import forIn from 'lodash/forIn';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 import groupBy from 'lodash/groupBy';
 import map from 'lodash/map';
 import sort from '../array/sort';
+import checkPropTypes from '../propType/checkPropTypes';
 
 import type { dataType, orderType, filterType, paginateType } from './data.type';
 
@@ -410,10 +410,8 @@ class Data
   _registerNewFilter(filter: filterType): boolean
   {
     const result = checkPropTypes(
-      FILTER_SCHEMA,
       filter,
-      'filter',
-      'Data',
+      FILTER_SCHEMA,
     );
 
     if (result)

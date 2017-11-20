@@ -26,16 +26,19 @@
     -   [count](#count)
     -   [countUnique](#countunique)
     -   [unique](#unique)
+    -   [sort](#sort)
 -   [string](#string)
     -   [capitalizeFirstLetter](#capitalizefirstletter)
+-   [proptype](#proptype)
+    -   [checkPropTypes](#checkproptypes)
 
 ## geometry
 
-[src/geometry.js:8-8](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/geometry.js#L8-L8 "Source code on GitHub")
+[src/geometry.js:8-8](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/geometry.js#L8-L8 "Source code on GitHub")
 
 ### deg2rad
 
-[src/geometry/deg2rad.js:16-16](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/geometry/deg2rad.js#L16-L16 "Source code on GitHub")
+[src/geometry/deg2rad.js:16-16](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/geometry/deg2rad.js#L16-L16 "Source code on GitHub")
 
 Convert degree to radian
 
@@ -58,7 +61,7 @@ Returns **int** radian
 
 ### getDistanceFromLatLonInKm
 
-[src/geometry/getDistanceFromLatLonInKm.js:33-50](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/geometry/getDistanceFromLatLonInKm.js#L33-L50 "Source code on GitHub")
+[src/geometry/getDistanceFromLatLonInKm.js:33-50](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/geometry/getDistanceFromLatLonInKm.js#L33-L50 "Source code on GitHub")
 
 Calculate distance two  geographic coordinates
 Decimal (World Geodetic System WGS84)
@@ -82,7 +85,7 @@ Returns **int** distance in km
 
 ### distance
 
-[src/geometry/distance.js:17-24](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/geometry/distance.js#L17-L24 "Source code on GitHub")
+[src/geometry/distance.js:17-24](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/geometry/distance.js#L17-L24 "Source code on GitHub")
 
 Calculate distance two coordinate points
 
@@ -108,7 +111,7 @@ Returns **int**
 
 ### pointInRect
 
-[src/geometry/pointInRect.js:22-33](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/geometry/pointInRect.js#L22-L33 "Source code on GitHub")
+[src/geometry/pointInRect.js:22-33](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/geometry/pointInRect.js#L22-L33 "Source code on GitHub")
 
 Check a point is inside of a rectangle
 
@@ -140,7 +143,7 @@ Returns **bool**
 
 ### twoLineIntersection
 
-[src/geometry/twoLineIntersection.js:26-60](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/geometry/twoLineIntersection.js#L26-L60 "Source code on GitHub")
+[src/geometry/twoLineIntersection.js:26-60](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/geometry/twoLineIntersection.js#L26-L60 "Source code on GitHub")
 
 Intersection of two lines
 
@@ -171,11 +174,11 @@ Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ## math
 
-[src/math.js:8-8](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/math.js#L8-L8 "Source code on GitHub")
+[src/math.js:8-8](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/math.js#L8-L8 "Source code on GitHub")
 
 ### clamp
 
-[src/math/clamp.js:19-29](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/math/clamp.js#L19-L29 "Source code on GitHub")
+[src/math/clamp.js:19-29](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/math/clamp.js#L19-L29 "Source code on GitHub")
 
 Clamping is the process of limiting a position to an area.
 Interval two value (min -> {x} &lt;- max)
@@ -201,11 +204,11 @@ Returns **int** value among min and max
 
 ## models
 
-[src/models.js:8-8](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/models.js#L8-L8 "Source code on GitHub")
+[src/models.js:8-8](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/models.js#L8-L8 "Source code on GitHub")
 
 ## Data
 
-[src/models/data.js:68-684](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/models/data.js#L68-L684 "Source code on GitHub")
+[src/models/data.js:69-680](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/models/data.js#L69-L680 "Source code on GitHub")
 
 Helper to Data grid
 Object transforms: paginate, sort, filters
@@ -262,7 +265,7 @@ new Data(data, settings);
 
 ### data
 
-[src/models/data.js:130-133](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/models/data.js#L130-L133 "Source code on GitHub")
+[src/models/data.js:131-134](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/models/data.js#L131-L134 "Source code on GitHub")
 
 Raw data.
 
@@ -270,7 +273,7 @@ Returns **dataType**
 
 ### results
 
-[src/models/data.js:145-148](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/models/data.js#L145-L148 "Source code on GitHub")
+[src/models/data.js:146-149](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/models/data.js#L146-L149 "Source code on GitHub")
 
 Handled data results.
 
@@ -278,7 +281,7 @@ Returns **dataType**
 
 ### order
 
-[src/models/data.js:165-168](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/models/data.js#L165-L168 "Source code on GitHub")
+[src/models/data.js:166-169](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/models/data.js#L166-L169 "Source code on GitHub")
 
 Current order settings
 
@@ -295,7 +298,7 @@ Returns **orderType**
 
 ### filters
 
-[src/models/data.js:226-229](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/models/data.js#L226-L229 "Source code on GitHub")
+[src/models/data.js:228-231](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/models/data.js#L228-L231 "Source code on GitHub")
 
 Filter Collections
 
@@ -319,7 +322,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 ### paginate
 
-[src/models/data.js:279-282](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/models/data.js#L279-L282 "Source code on GitHub")
+[src/models/data.js:281-284](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/models/data.js#L281-L284 "Source code on GitHub")
 
 Current order settings
 
@@ -340,7 +343,7 @@ Returns **paginateType**
 
 ### handle
 
-[src/models/data.js:503-515](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/models/data.js#L503-L515 "Source code on GitHub")
+[src/models/data.js:499-511](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/models/data.js#L499-L511 "Source code on GitHub")
 
 Data handling process -> this.results
 
@@ -351,7 +354,7 @@ Returns **void**
 
 ### getDataByIndex
 
-[src/models/data.js:523-531](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/models/data.js#L523-L531 "Source code on GitHub")
+[src/models/data.js:519-527](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/models/data.js#L519-L527 "Source code on GitHub")
 
 Return data element by index
 
@@ -363,7 +366,7 @@ Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ### getResultByIndex
 
-[src/models/data.js:539-547](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/models/data.js#L539-L547 "Source code on GitHub")
+[src/models/data.js:535-543](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/models/data.js#L535-L543 "Source code on GitHub")
 
 Return results element by index
 
@@ -375,7 +378,7 @@ Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ### getResultsGroupBy
 
-[src/models/data.js:576-592](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/models/data.js#L576-L592 "Source code on GitHub")
+[src/models/data.js:572-588](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/models/data.js#L572-L588 "Source code on GitHub")
 
 It returns grouped results
 
@@ -407,7 +410,7 @@ Returns **[object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 ### getPivotTable
 
-[src/models/data.js:616-683](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/models/data.js#L616-L683 "Source code on GitHub")
+[src/models/data.js:612-679](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/models/data.js#L612-L679 "Source code on GitHub")
 
 Calculate a PivotTable about the data filtered \_results
 
@@ -445,11 +448,11 @@ Returns **([number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 ## array
 
-[src/array.js:9-9](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/array.js#L9-L9 "Source code on GitHub")
+[src/array.js:9-9](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/array.js#L9-L9 "Source code on GitHub")
 
 ### count
 
-[src/array/count.js:16-16](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/array/count.js#L16-L16 "Source code on GitHub")
+[src/array/count.js:16-16](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/array/count.js#L16-L16 "Source code on GitHub")
 
 Function returns the length of array.
 
@@ -472,7 +475,7 @@ Returns **int**
 
 ### countUnique
 
-[src/array/countUnique.js:18-18](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/array/countUnique.js#L18-L18 "Source code on GitHub")
+[src/array/countUnique.js:18-18](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/array/countUnique.js#L18-L18 "Source code on GitHub")
 
 Function returns the count value of unique items array.
 
@@ -495,7 +498,7 @@ Returns **int**
 
 ### unique
 
-[src/array/unique.js:16-27](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/array/unique.js#L16-L27 "Source code on GitHub")
+[src/array/unique.js:16-27](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/array/unique.js#L16-L27 "Source code on GitHub")
 
 Function returns the unique items of array.
 
@@ -516,13 +519,34 @@ Returns **[array](#array)**
 
 -   **since**: 3.2.0
 
+### sort
+
+[src/array/sort.js:37-53](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/array/sort.js#L37-L53 "Source code on GitHub")
+
+Array sort better performace than native sort
+
+100 [{},{}...] record same performace
+1.000 [{},{}...] record ~1.000x faster
+10.000 [{},{}...] record ~10.000x faster
+
+**Parameters**
+
+-   `array` **[array](#array)** 
+-   `compare` **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** 
+
+Returns **[array](#array)** 
+
+**Meta**
+
+-   **since**: 3.2.0
+
 ## string
 
-[src/string.js:8-8](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/string.js#L8-L8 "Source code on GitHub")
+[src/string.js:8-8](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/string.js#L8-L8 "Source code on GitHub")
 
 ### capitalizeFirstLetter
 
-[src/string/capitalizeFirstLetter.js:15-15](https://github.com/roberto404/utils/blob/be9deca4192ff594ccef4f0a15fd9b07177a8957/src/string/capitalizeFirstLetter.js#L15-L15 "Source code on GitHub")
+[src/string/capitalizeFirstLetter.js:15-15](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/string/capitalizeFirstLetter.js#L15-L15 "Source code on GitHub")
 
 Capitalize the first letter of string
 
@@ -541,3 +565,42 @@ Returns **[string](#string)**
 **Meta**
 
 -   **since**: 3.1.0
+
+## proptype
+
+[src/propType.js:8-8](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/propType.js#L8-L8 "Source code on GitHub")
+
+### checkPropTypes
+
+[src/propType/checkPropTypes.js:30-55](https://github.com/roberto404/utils/blob/14fd2cc6dd855f9cff0964ff84056057cf0c255c/src/propType/checkPropTypes.js#L30-L55 "Source code on GitHub")
+
+Validate Object like as React component props
+
+**Parameters**
+
+-   `subject` **any** observed value or observe Object
+-   `propType` **([function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function) \| [object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object))** one PropType or PropTypes object
+
+**Examples**
+
+```javascript
+checkPropTypes(
+ { id: 'something' status: true },
+ {
+   id: PropTypes.string.isRequired,
+   status: PropTypes.bool.isRequired,
+ }
+);
+// -> null
+
+or
+
+checkPropTypes('string', PropTypes.number);
+// -> [errors]
+```
+
+Returns **(null | [array](#array))** errors array
+
+**Meta**
+
+-   **since**: 3.5.0

@@ -27,6 +27,9 @@ const merge = (left: Array<any>, right: Array<any>, compare: Function): Array<an
  * 1.000 [{},{}...] record ~1.000x faster
  * 10.000 [{},{}...] record ~10.000x faster
  *
+ * @since 3.2.0
+ * @static
+ * @memberof array
  * @param  {array} array
  * @param  {function} compare
  * @return {array}
