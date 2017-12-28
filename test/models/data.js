@@ -3,14 +3,11 @@ import deepFreeze from 'deep-freeze';
 import
 {
   findIndex,
-  clone,
-  chain,
   sum,
   max,
   min,
   mean,
 } from 'lodash';
-import { foo } from '../../src/array';
 import count from '../../src/array/count';
 import countUnique from '../../src/array/countUnique';
 import { Data } from '../../src/models';
@@ -93,6 +90,15 @@ describe('Model: Data:', () =>
     dataModel.results.should.to.deep.equal(dataModel2.results);
   });
 
+  it('Initial error', () =>
+  {
+    const dataModel2 = new Data(undefined, false);
+    dataModel2.results.should.to.be.be.an('array').that.is.empty;
+
+    const dataModel3 = new Data(sampleData, false);
+    dataModel3.results.should.to.be.be.an('array').that.is.empty;
+  });
+
   it('Ordering process', () =>
   {
     dataModel.order = { column: 'color', direction: 'asc' };
@@ -101,6 +107,53 @@ describe('Model: Data:', () =>
       results => results
                  .every(r => findIndex(sampleData, r) > -1),
     );
+  });
+
+  it('Reverse order', () =>
+  {
+    dataModel.order = { column: 'color', direction: 'desc' };
+    dataModel.results.should.to.deep.equal([
+      {
+        id: 6,
+        color: 'yellow',
+        value: '#ff0',
+      },
+      {
+        id: 1,
+        color: 'red',
+        value: '#f00',
+        category: 'A',
+      },
+      {
+        id: 5,
+        color: 'magenta',
+        value: '#f0f',
+        category: 'B',
+      },
+      {
+        id: 2,
+        color: 'green',
+        value: '#0f0',
+        category: 'A',
+      },
+      {
+        id: 4,
+        color: 'cyan',
+        value: '#0ff',
+        category: 'A',
+      },
+      {
+        id: 3,
+        color: 'blue',
+        value: '#00f',
+        category: 'B',
+      },
+      {
+        id: 7,
+        color: 'black',
+        value: '#000',
+      },
+    ]);
   });
 
   it('Failed set order', () =>
@@ -234,4 +287,26 @@ describe('Model: Data:', () =>
     });
   });
 
+  it('Compact method', () =>
+  {
+    const data = [
+      { id: 0, A: 1, B: 'foo' },
+      { id: 1, A: 1, B: 'bar' },
+      { id: 2, A: 1, B: 'bar' },
+      { id: 3, A: 2, B: 'bar' },
+      { id: 4, A: 1, B: 'foo' },
+      { id: 5, A: 1, B: 'foo' },
+    ];
+
+    dataModel = new Data(data);
+
+    deepFreeze(data);
+    deepFreeze(dataModel.results);
+
+    dataModel.compact('id').should.to.deep.equal([
+      { id: [0, 4, 5], A: 1, B: 'foo' },
+      { id: [1, 2], A: 1, B: 'bar' },
+      { id: [3], A: 2, B: 'bar' },
+    ]);
+  });
 });

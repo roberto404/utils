@@ -8,6 +8,7 @@ import groupBy from 'lodash/groupBy';
 import map from 'lodash/map';
 import sort from '../array/sort';
 import checkPropTypes from '../propType/checkPropTypes';
+import toNumber, { NOT_NAN_REGEX } from '../string/toNumber';
 
 import type { dataType, orderType, filterType, paginateType } from './data.type';
 
@@ -18,7 +19,6 @@ const FILTER_SCHEMA = {
   arguments: PropTypes.arrayOf(PropTypes.string),
   status: PropTypes.bool.isRequired,
 };
-
 
 /**
  * Helper to Data grid
@@ -353,21 +353,33 @@ class Data
     {
       this._results = sort(this._results, (left, rigth) =>
       {
-        const a = left[this.order.column] || '';
-        const b = rigth[this.order.column] || '';
+        let a = left[this.order.column] || '';
+        let b = rigth[this.order.column] || '';
 
-        const ifReverse = (result: number): number =>
-          (result + (+(this.order.direction !== 'asc'))) % 2;
+        if (typeof a === 'string' && NOT_NAN_REGEX.test(a))
+        {
+          a = toNumber(a);
+        }
+
+        if (typeof b === 'string' && NOT_NAN_REGEX.test(b))
+        {
+          b = toNumber(b);
+        }
 
         // number
         if (!isNaN(a) && !isNaN(b))
         {
-          return ifReverse(+(parseFloat(a) >= parseFloat(b)));
+          return parseFloat(a) >= parseFloat(b);
         }
 
         // string
-        return ifReverse(a.toLowerCase().localeCompare(b.toLowerCase()));
+        return a.toLowerCase().localeCompare(b.toLowerCase()) === 1;
       });
+    }
+
+    if (this.order.direction !== 'asc')
+    {
+      this._results.reverse();
     }
   }
 
@@ -676,6 +688,73 @@ class Data
       );
     }
     return null;
+  }
+
+  /**
+   * Determine Unique records.
+   * Iterate all model result records and compare every record.
+   * Grouping those records which deep equal, return grouped results array.
+   * The UID field will be cast to array, which include all collected UID.
+   *
+   * @since 3.6.0
+   * @param  {string} field basically UID.
+   * @return {array}       arrayOf(Object), part of results
+   * @example
+   *   const data = [
+   *     { id: 0, A: 1, B: 'foo' },
+   *     { id: 1, A: 1, B: 'bar' },
+   *     { id: 2, A: 1, B: 'bar' },
+   *     { id: 3, A: 2, B: 'bar' },
+   *     { id: 4, A: 1, B: 'foo' },
+   *     { id: 5, A: 1, B: 'foo' },
+   *   ];
+   *   const dataModel = new Data(data);
+   *
+   *   dataModel.compact('id');
+   *
+   *   // => [
+   *     { id: [0, 4, 5], A: 1, B: 'foo' },
+   *     { id: [1, 2], A: 1, B: 'bar' },
+   *     { id: [3], A: 2, B: 'bar' },
+   *   ];
+   */
+  compact(field:string = 'id')
+  {
+    const compactResults = [];
+
+    // iterate all model result records
+    this.results.forEach((modelRecord) =>
+    {
+      const matched = compactResults.some((compactRecord, index) =>
+      {
+        const deepEqual = Object.keys(compactRecord).every((key) =>
+        {
+          if (key === field)
+          {
+            return true;
+          }
+
+          return modelRecord[key] === compactRecord[key];
+        });
+
+        if (deepEqual)
+        {
+          compactResults[index][field].push(modelRecord[field]);
+        }
+
+        return deepEqual;
+      });
+
+      if (!matched)
+      {
+        compactResults.push({
+          ...modelRecord,
+          [field]: [modelRecord[field]],
+        });
+      }
+    });
+
+    return compactResults;
   }
 }
 
