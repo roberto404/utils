@@ -18,12 +18,12 @@
  */
 const clamp = (
   value: number,
-  min: number,
-  max: number,
+  min: number | false,
+  max?: number,
 ): number =>
 {
-  const maxValue = max || value;
-  const minValue = min || maxValue;
+  const maxValue = (typeof max === 'number') ? max : value;
+  const minValue = (typeof min === 'number') ? min : maxValue;
 
   return Math.max(Math.min(maxValue, value), minValue);
 };
