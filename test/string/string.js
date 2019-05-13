@@ -1,5 +1,11 @@
 import { expect, should } from 'chai';
-import { capitalizeFirstLetter, slugify, toNumber } from '../../src/string'
+import {
+  capitalizeFirstLetter,
+  slugify,
+  toNumber,
+  encrypt,
+  decrypt,
+} from '../../src/string'
 
 should();
 
@@ -8,6 +14,13 @@ describe('capitalizeFirstLetter', () =>
   it('Normal', () =>
   {
     capitalizeFirstLetter('lorem ipsum').should.to.equal('Lorem ipsum');
+  });
+
+  it('Wrong attributes', () =>
+  {
+    expect(capitalizeFirstLetter(null)).to.be.null;
+    expect(capitalizeFirstLetter()).to.be.undefined;
+    capitalizeFirstLetter({ foo: 'bar' }).should.to.deep.equal({ foo: 'bar' });
   });
 });
 
@@ -33,7 +46,10 @@ describe('toNumber', () =>
   {
     toNumber('1 300').should.to.be.an('number');
     toNumber('-1 300').should.to.be.an('number');
+    toNumber('-1 300,500').should.to.be.an('number');
     toNumber('foo').should.to.be.an('number');
+    toNumber('1 300').should.to.be.equal(1300);
+    toNumber('-1 300,500').should.to.be.equal(-1300.5);
   });
 
   it('failed type of param', () =>
@@ -45,6 +61,7 @@ describe('toNumber', () =>
     isNaN(toNumber(undefined)).should.to.be.true;
     isNaN(toNumber(null)).should.to.be.true;
     isNaN(toNumber([1, false])).should.to.be.true;
+    // toNumber([1, false]).should.to.be.equal([1, false]);
 
     toNumber(1300).should.to.be.equal(1300);
   });
@@ -59,5 +76,17 @@ describe('toNumber', () =>
   {
     toNumber('-1 300').should.to.be.equal(-1300);
     toNumber('-1,300').should.to.be.equal(-1.3);
+  });
+});
+
+
+describe('Encrypt/decrypt', () =>
+{
+  it('Use default algorithm', () =>
+  {
+    const text = 'hellotest';
+    const password = 'hellopass';
+
+    decrypt(encrypt(text, password), password).should.to.equal(text);
   });
 });

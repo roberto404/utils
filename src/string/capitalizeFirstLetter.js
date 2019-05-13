@@ -12,6 +12,14 @@
  *
  * capitalizeFirstLetter('lorem ipsum');
  */
-const capitalizeFirstLetter = (string: string): string => string[0].toUpperCase() + string.slice(1);
+const capitalizeFirstLetter = (string: string): string =>
+{
+  if (typeof string !== 'string')
+  {
+    return string;
+  }
+
+  return string[0].toUpperCase() + string.slice(1);
+};
 
 export default capitalizeFirstLetter;
