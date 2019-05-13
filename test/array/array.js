@@ -1,7 +1,5 @@
 import { expect, should } from 'chai';
-import ArrayMethods from '../../src/array'
-
-const { count, countUnique, unique } = ArrayMethods;
+import { count, countUnique, unique, produceNumericArray } from '../../src/array';
 
 should();
 
@@ -26,5 +24,17 @@ describe('ArrayMethods', () =>
     unique([1, '1', 3]).should.to.deep.equal([1, '1', 3]);
     unique(['a', 'a', 'c']).should.to.deep.equal(['a', 'c']);
     unique([undefined, undefined, {}]).should.to.deep.equal([{}]);
+  });
+
+  it('produceNumericArray', () =>
+  {
+    // normal method
+    produceNumericArray(3, 5).should.to.deep.equal([3, 4, 5]);
+    produceNumericArray(3, 5, n => n + 1).should.to.deep.equal([4, 5, 6]);
+
+    // wrong attributes
+    produceNumericArray(3).should.to.deep.equal([]);
+    produceNumericArray('a', 'b').should.to.deep.equal([]);
+    produceNumericArray(3, 5, 'ff').should.to.deep.equal([3, 4, 5]);
   });
 });
