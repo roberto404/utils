@@ -10,9 +10,12 @@ import reduce from 'lodash/reduce';
  * @static
  * @memberof proptype
  * @param  {any} subject  observed value or observe Object
- * @param  {function|object} propType one PropType or PropTypes object
+ * @param  {function|object} propType typeSpecs Map of name to a ReactPropType
+ * @param  {string} objectName name of observed object
  * @return {null|array}          errors array
  * @example
+ * import PropTypes, { checkPropTypes } from '@1studio/utils/propType';
+ *
  * checkPropTypes(
  *  { id: 'something' status: true },
  *  {
@@ -30,6 +33,7 @@ import reduce from 'lodash/reduce';
 const checkPropTypes = (
   subject: any,
   propType: Function | { [string | number]: Function },
+  objectName?: string = 'object',
 ) : null | Array<{}> =>
 {
   const subjects = (typeof propType === 'function') ? { 0: subject } : subject;
@@ -39,7 +43,14 @@ const checkPropTypes = (
     propTypes,
     (result, validators, index) =>
     {
-      const error = validators(subjects, index, JSON.stringify(subject), 'object', null, ReactPropTypesSecret);
+      const error = validators(
+        subjects,
+        index,
+        JSON.stringify(subject),
+        objectName,
+        null,
+        ReactPropTypesSecret,
+      );
 
       if (error)
       {
