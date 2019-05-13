@@ -30,6 +30,7 @@ const toNumber = (string: string): number =>
   {
     return NaN;
   }
+
   return Number(string.replace(/ /g, '').replace(',', '.'));
 };
 
