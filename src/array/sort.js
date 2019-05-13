@@ -22,10 +22,7 @@ const merge = (left: Array<any>, right: Array<any>, compare: Function): Array<an
 
 /**
  * Array sort better performace than native sort
- *
- * 100 [{},{}...] record same performace
- * 1.000 [{},{}...] record ~1.000x faster
- * 10.000 [{},{}...] record ~10.000x faster
+ * Useful for big data
  *
  * @since 3.2.0
  * @static
@@ -33,6 +30,15 @@ const merge = (left: Array<any>, right: Array<any>, compare: Function): Array<an
  * @param  {array} array
  * @param  {function} compare
  * @return {array}
+ *
+ * @example
+ *
+ * const results = sort(
+ *    [8, 4, 1, 0, 10, 2],
+ *    (a, b) => a >= b,
+ *  );
+ * // => [0, 1, 2, 4, 8, 10]
+ *
  */
 const sort = (array: Array<any>, compare: Function): Array<any> =>
 {

@@ -14,18 +14,19 @@ const suite = new Benchmark.Suite();
 
 const data = [];
 
-for (let i = 0; i < 1000; i++)
+for (let i = 0; i < 10000; i += 1)
 {
   data.push({
     id: i,
+    title: Math.random().toString(36).replace(/[^a-z]+/g, ''),
     value: Math.round(Math.random() * 100)
   });
 }
 
-const sortMethod = (recordOne, recordTwo) =>
+const sortMethod = column => (recordOne, recordTwo) =>
 {
-  const a = recordOne.title || '';
-  const b = recordTwo.title || '';
+  const a = recordOne.column || '';
+  const b = recordTwo.column || '';
 
   if (!isNaN(a) && !isNaN(b))
   {
@@ -38,12 +39,11 @@ const sortMethod = (recordOne, recordTwo) =>
 suite
   .add('#A', () =>
   {
-    // list.sort((a,b) => a>b);
-    data.sort(sortMethod);
+    data.sort(sortMethod('title'));
   })
   .add('#B', () =>
   {
-    sort(data, sortMethod);
+    sort(data, sortMethod('title'));
   })
   // add listeners
   .on('cycle', (event) =>
@@ -52,8 +52,13 @@ suite
   })
   .on('complete', () =>
   {
-    // console.log('Fastest is ' + suite.filter('fastest').map('name'));
-    console.log(Math.round(suite[1].hz / suite[0].hz * 100) - 100 +'%');
+    console.log('Fastest is ' + suite.filter('fastest').map('name'));
+
+    /**
+     * hist suite runs num / sec
+     * suite[0].hz
+     */
+    console.log(`${suite[1].name} runs ${Math.round((suite[1].hz / suite[0].hz) * 10) / 10}x ${suite[1].hz > suite[0].hz ? 'fastest' : 'slowest'} then ${suite[0].name}`);
   })
   // run async
   .run({ 'async': true });
