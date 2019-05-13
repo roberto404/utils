@@ -1,3 +1,5 @@
+// https://en.wikipedia.org/wiki/List_of_Latin-script_letters
+
 export default {
   '[/^]': '',
   ' ': '_',
@@ -144,11 +146,16 @@ export default {
   ŕ: 'r',
   ř: 'r',
   ŗ: 'r',
-  Ś: 'S',
-  Š: 'S',
-  Ş: 'S',
-  Ŝ: 'S',
+  S̀: 'S',  // Roman
+  s̀: 's',
+  Ś: 'S',  // Polish
+  ś: 's',
+  Š: 'S',  // Arabic, Syriac, Czech, Slovak, Croatian, Slovenian, Sorbian, Lithuanian, Latvian, Estonian, Bosnian
+  š: 's',
+  ș: 's',  // Roman
   Ș: 'S',
+  Ş: 'S',  // Azerbaijani, Gagauz, Turkish...
+  ş: 's',
   Ť: 'T',
   Ţ: 'T',
   Ŧ: 'T',
