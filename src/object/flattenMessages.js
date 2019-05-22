@@ -1,5 +1,5 @@
 /**
- * Convert nestetObject to one dimension
+ * Convert nestetObject to one dimension object
  * @param  {object} nestedMessages
  * @param  {String} [prefix='']
  * @return {Object}
