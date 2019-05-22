@@ -1,24 +1,54 @@
 // @flow
 
 import PropTypes from 'prop-types';
-import forIn from 'lodash/forIn';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 import groupBy from 'lodash/groupBy';
 import map from 'lodash/map';
-import sort from '../array/sort';
+import get from 'lodash/get';
+import set from 'lodash/set';
+import has from 'lodash/has';
 import checkPropTypes from '../propType/checkPropTypes';
+import sort from '../array/sort';
 import toNumber, { NOT_NAN_REGEX } from '../string/toNumber';
+import clamp from '../math/clamp';
 
-import type { dataType, orderType, filterType, paginateType } from './data.type';
+import type { dataType, orderType, filterType, paginateType, sortMethodType } from './data.type';
 
 const DIRECTIONS = ['asc', 'desc'];
-const FILTER_SCHEMA = {
+
+export const PROPTYPE_FILTER = {
   id: PropTypes.string.isRequired,
   handler: PropTypes.func.isRequired,
-  arguments: PropTypes.arrayOf(PropTypes.string),
+  arguments: PropTypes.arrayOf(PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.number,
+    PropTypes.bool,
+  ])),
   status: PropTypes.bool.isRequired,
 };
+
+export const PROPTYPES = {
+  data: PropTypes.arrayOf(PropTypes.object).isRequired,
+  paginate: PropTypes.shape({
+    limit: PropTypes.number,
+    page: PropTypes.number.isRequired,
+  }),
+  order: PropTypes.shape({
+    column: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.func,
+    ]),
+    direction: PropTypes.oneOf(DIRECTIONS),
+  }),
+  filters: PropTypes.arrayOf(PropTypes.shape(PROPTYPE_FILTER)),
+};
+
+export const PROPTYPE_SETTINGS = PropTypes.shape({
+  paginate: PROPTYPES.paginate,
+  order: PROPTYPES.order,
+  filters: PROPTYPES.filters,
+});
 
 /**
  * Helper to Data grid
@@ -73,6 +103,7 @@ class Data
   _order: orderType;
   _filters: filterType[];
   _paginate: paginateType;
+  sortMethod: sortMethodType;
 
 
   /**
@@ -87,11 +118,21 @@ class Data
       order?: orderType,
       filters?: Array<filterType>,
       paginate?: paginateType,
+      sortMethod?: sortMethodType,
     } = {},
   )
   {
-    if (data === undefined || typeof settings !== typeof {})
+    const errors = [
+      ...(checkPropTypes(data, PROPTYPES.data, 'data') || []),
+      ...(checkPropTypes(settings, PROPTYPE_SETTINGS, 'settings') || []),
+    ];
+
+    if (errors.length)
     {
+      if (process.env.NODE_ENV !== 'production')
+      {
+        console.warn(`Data model inital error. ${errors.map(e => e.message).join(' ')}`); // eslint-disable-line no-console
+      }
       return false;
     }
 
@@ -99,27 +140,25 @@ class Data
 
     this._results = this._data.concat([]);
 
-    this._order =
-    {
-      column: '',
-      direction: 'asc', // asc || desc
-    };
+    this._order = settings.order ||
+      {
+        column: '',
+        direction: 'asc', // asc || desc
+      };
 
-    this._filters = [];
+    this._filters = settings.filters || [];
 
-    this._paginate =
-    {
-      page: 1,
-      limit: 20,
-      totalPage: 0,
-      results: null,
-      nextPage: null,
-      prevPage: null,
-    };
+    this._paginate = settings.paginate ||
+      {
+        page: 1,
+        limit: 20,
+        totalPage: 0,
+        results: null,
+        nextPage: null,
+        prevPage: null,
+      };
 
-    this.order = settings.order || {};
-    this.filters = settings.filters || [];
-    this.paginate = settings.paginate || { page: 1 };
+    this.handle();
   }
 
   /* !- Getter Setter */
@@ -175,7 +214,12 @@ class Data
       return;
     }
 
-    const order = Object.assign({}, this._order);
+    const order = { ...this._order };
+
+    if (['string', 'function'].indexOf(typeof settings.column) !== -1)
+    {
+      order.column = settings.column;
+    }
 
     if (!settings.direction && settings.column === order.column)
     {
@@ -194,16 +238,9 @@ class Data
       order.direction = DIRECTIONS[0];
     }
 
-    if (settings.column !== order.column &&
-        Object.keys(this.data[0]).indexOf(settings.column) !== -1)
-    {
-      order.column = settings.column;
-    }
-
     if (!isEqual(order, this.order))
     {
       this._order = order;
-      this._paginate = this._pagination({ page: 1 });
       this.handle();
     }
   }
@@ -223,6 +260,10 @@ class Data
    *    status: true,
    * }];
    *
+   * // able to use object, if you set only one element
+   *
+   * data.filters = { id: 'foo', handler, arguments, status }
+   *
    * // => data.results
    */
   get filters(): filterType[]
@@ -232,11 +273,13 @@ class Data
 
   set filters(newFilters: filterType[] | filterType)
   {
+    // object to array
     const filters = (Array.isArray(newFilters)) ?
-      newFilters : [newFilters];
+      newFilters.map(filter => ({ ...filter })) : [{ ...newFilters }];
 
     let modified = false;
 
+    // register, update or inactive observed filter
     filters.forEach((filter) =>
     {
       const filterIndex = this.filters.findIndex(f => f.id === filter.id);
@@ -306,34 +349,45 @@ class Data
       return this._paginate;
     }
 
-    const paginate = Object.assign({}, this._paginate, options);
+    const paginate = {
+      ...this._paginate,
+      ...options,
+    };
 
-    if (typeof options.limit === 'number')
+    if (typeof options.limit !== 'number')
     {
-      paginate.limit = options.limit;
+      paginate.limit = this._paginate.limit;
     }
 
     paginate.total = this._results.length;
+
+    if (paginate.limit === 0)
+    {
+      paginate.limit = paginate.total;
+    }
+
     paginate.totalPage = Math.ceil(paginate.total / paginate.limit);
 
-    if (typeof options.page === 'number' &&
-        options.page > 0 &&
-        options.page <= paginate.totalPage)
+    if (typeof options.page === 'number')
     {
       paginate.page = Math.ceil(options.page);
     }
-    else
-    {
-      paginate.page = this._paginate.page;
-    }
+
+    paginate.page = clamp(paginate.page, 1, paginate.totalPage);
 
     const offset = (paginate.page - 1) * paginate.limit;
 
-    paginate.results = this._results.slice(offset, offset + paginate.limit);
+    paginate.results = isNaN(offset) ? this._results :
+      this._results.slice(offset, offset + paginate.limit);
     paginate.nextPage = (paginate.page < paginate.totalPage)
       ? paginate.page + 1 : null;
     paginate.prevPage = (paginate.page > 1)
       ? paginate.page - 1 : null;
+
+    if (options.limit === 0)
+    {
+      paginate.limit = 0;
+    }
 
     return paginate;
   }
@@ -347,33 +401,76 @@ class Data
    * @private
    * @return {void}
    */
-  _sort()
+  _sort = () =>
   {
     if (this.order.column)
     {
-      this._results = sort(this._results, (left, rigth) =>
+      if (typeof this.order.column === 'function')
       {
-        let a = left[this.order.column] || '';
-        let b = rigth[this.order.column] || '';
+        this._results = sort(this._results, this.order.column);
+        return;
+      }
 
-        if (typeof a === 'string' && NOT_NAN_REGEX.test(a))
+      // find not empty observed record
+      this._results.some((record) =>
+      {
+        if (!record[this.order.column])
         {
-          a = toNumber(a);
+          return false;
         }
 
-        if (typeof b === 'string' && NOT_NAN_REGEX.test(b))
+        const field = record[this.order.column] || '';
+
+        // integer
+        if (typeof field === 'number')
         {
-          b = toNumber(b);
+          this._results = sort(this._results, (a, b) =>
+            (a[this.order.column] || 0) >= (b[this.order.column] || 0),
+          );
+        }
+        // number in string format
+        else if (!isNaN(field))
+        {
+          this._results = sort(this._results, (a, b) =>
+            parseFloat(a[this.order.column] || 0) >= parseFloat(b[this.order.column] || 0),
+          );
+        }
+        // special numberic field (like currency)
+        else if (typeof field === 'string' && NOT_NAN_REGEX.test(field))
+        {
+          this._results = sort(this._results, (left, right) =>
+          {
+            let a = left[this.order.column] || '';
+            let b = right[this.order.column] || '';
+
+            // string looks like a number => convert to number
+            const aLikeNum = typeof a === 'string' && NOT_NAN_REGEX.test(a);
+            const bLikeNum = typeof b === 'string' && NOT_NAN_REGEX.test(b);
+
+            if (aLikeNum && (typeof b === 'number' || bLikeNum))
+            {
+              a = toNumber(a);
+            }
+
+            if (bLikeNum && typeof a === 'number')
+            {
+              b = toNumber(b);
+            }
+
+            return parseFloat(a || 0) >= parseFloat(b || 0);
+          });
+        }
+        // string compare
+        else
+        {
+          this._results = sort(this._results, (a, b) =>
+            a[this.order.column]
+              .toLowerCase()
+              .localeCompare(b[this.order.column].toLowerCase()) === 1,
+          );
         }
 
-        // number
-        if (!isNaN(a) && !isNaN(b))
-        {
-          return parseFloat(a) >= parseFloat(b);
-        }
-
-        // string
-        return a.toLowerCase().localeCompare(b.toLowerCase()) === 1;
+        return true;
       });
     }
 
@@ -391,23 +488,15 @@ class Data
    */
   _filter()
   {
-    this._results = this._results.filter((record) =>
-    {
-      let proper = true;
+    // all filter argument
+    const args = {};
+    this._filters.forEach(filter => args[filter.id] = filter.arguments); // eslint-disable-line
 
-      this._filters
-        .map((filter) =>
-        {
-          if (proper && filter.status && !filter.handler(record, ...filter.arguments))
-          {
-            proper = false;
-          }
-
-          return true;
-        });
-
-      return proper;
-    });
+    this._results = this._results.filter(record =>
+      this._filters.every(filter =>
+        filter.status === false || filter.handler(record, ...filter.arguments, args, this),
+      ),
+    );
   }
 
 
@@ -423,7 +512,7 @@ class Data
   {
     const result = checkPropTypes(
       filter,
-      FILTER_SCHEMA,
+      PROPTYPE_FILTER,
     );
 
     if (result)
@@ -431,7 +520,7 @@ class Data
       return false;
     }
 
-    this._filters.push(filter);
+    this._filters = [...this._filters, filter];
     return true;
   }
 
@@ -463,24 +552,14 @@ class Data
    */
   _updateFilterByIndex(index: number, filter: filterType): boolean
   {
-    let modified = false;
-    const newFilter = this._filters[index];
-
-    forIn(newFilter, (value, key) =>
+    if (Object.keys(filter).some(key => this._filters[index][key] !== filter[key]))
     {
-      if (typeof filter[key] === typeof value)
-      {
-        newFilter[key] = filter[key];
-        modified = true;
-      }
-    });
-
-    if (modified)
-    {
-      this._filters[index] = newFilter;
+      this._filters[index] = {
+        ...this._filters[index],
+        ...filter,
+      };
       return true;
     }
-
     return false;
   }
 
@@ -519,7 +598,21 @@ class Data
 
     this._sort();
 
+    this._paginate.page = 1;
     this._paginate = this._pagination(this._paginate);
+  }
+
+  getSettings()
+  {
+    return ({
+      // filters: this._filters, // => todo _filter() paginationt 1-re allitja.
+      order: this._order,
+      paginate:
+      {
+        limit: this._paginate.limit,
+        page: this._paginate.page,
+      },
+    });
   }
 
 
@@ -554,15 +647,42 @@ class Data
     return this.results[index];
   }
 
+  /**
+   * [field description]
+   * @type {string} field
+   * @since 3.7.0
+   */
+  collectResultsByField(field: string | []): []
+  {
+    const respond = {};
+    const fields = Array.isArray(field) ? field : [field];
+
+    this.results.forEach((result) =>
+    {
+      const valueOfFields = fields.map(currentField => `#${result[currentField]}`);
+
+      const pointer = valueOfFields.join('.');
+
+      if (!has(respond, pointer))
+      {
+        set(respond, pointer, []);
+      }
+
+      set(respond, pointer, [...get(respond, pointer), result]);
+    });
+
+    return respond;
+  }
+
 
   /**
   * It returns grouped results
   * @param  {string} field    grouping result by this object key
+  * @param  {function} [labelIteratee = (records, field) => field]
+  * group field value format method. Default return original value
   * @param  {function} [valueIteratee = (records, field) => records.length]
   * group field items method. Default is count group elements
   *
-  * @param  {function} [labelIteratee = (records, field) => field]
-  * group field value format method. Default return original value
   *
   * @example
   * <caption>Grouping by date, where the value sum every record person property
@@ -579,7 +699,7 @@ class Data
   * )
   *
   *
-  * @return {object}          {'group1': ineratee return, 'group2': valueIteratee return}
+  * @return {object}          {'group1': valueIteratee return, 'group2': valueIteratee return}
   */
   getResultsGroupBy(
     field: string,

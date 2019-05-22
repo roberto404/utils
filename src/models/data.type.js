@@ -21,11 +21,12 @@ export type paginateType =
 export type filterType =
 {
   id: string,
-  handler: (record: {}, value: string) => boolean,
+  handler: (record: {}, value: string, args?: {}) => boolean,
   arguments: Array<string>,
   status: boolean,
 };
 
+export type sortMethodType = (dataType, Function) => boolean;
 
 export interface dataInterface
 {

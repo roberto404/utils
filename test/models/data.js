@@ -97,6 +97,9 @@ describe('Model: Data:', () =>
 
     const dataModel3 = new Data(sampleData, false);
     dataModel3.results.should.to.be.be.an('array').that.is.empty;
+
+    const dataModel4 = new Data(null, 1);
+    dataModel4.results.should.to.be.be.an('array').that.is.empty;
   });
 
   it('Ordering process', () =>
@@ -238,6 +241,19 @@ describe('Model: Data:', () =>
     const paginateBefore = dataModel.paginate;
     dataModel.paginate = '123';
     dataModel.paginate.should.to.deep.equal(paginateBefore);
+  });
+
+  it('Pagination no-limit', () =>
+  {
+    const limitBefore = dataModel.paginate.limit;
+    dataModel.paginate = { limit: 'string' };
+    dataModel.paginate.limit.should.to.equal(limitBefore);
+
+    dataModel.paginate = { limit: 1 };
+    dataModel.paginate.totalPage.should.to.equal(sampleData.length);
+
+    dataModel.paginate = { limit: 0 };
+    dataModel.paginate.results.should.to.deep.equal(sampleData);
   });
 
   it('Group by', () =>
