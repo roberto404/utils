@@ -11,7 +11,8 @@ module.exports = {
         "no-mixed-operators": ["error", {"allowSamePrecedence": true}],
         "no-underscore-dangle": ["error", { "allowAfterThis": true }],
         "radix": ["error", "as-needed"],
-        "valid-typeof": ["error", { "requireStringLiterals": false }]
+        "valid-typeof": ["error", { "requireStringLiterals": false }],
+        "no-continue": 'off',
     },
     "plugins": [
         "babel"
