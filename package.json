@@ -1,6 +1,6 @@
 {
   "name": "@1studio/utils",
-  "version": "0.0.0-semantically-released",
+  "version": "0.0.0-development",
   "description": "A collection of useful utilities.",
   "main": "index.js",
   "scripts": {
@@ -24,9 +24,9 @@
     "build:prod": "webpack --env.prod -p",
     "prewatch": "npm run build",
     "watch": "node_modules/.bin/webpack-dev-server --env.dev",
-    "precommit": "npm run validate",
+    "#precommit": "npm run validate",
     "commit": "git-cz",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "semantic-release": "semantic-release"
   },
   "repository": {
     "type": "git",
@@ -74,22 +74,29 @@
     "eslint-plugin-react": "^7.1.0",
     "flow-bin": "0.57.3",
     "jsdoc-dash-template": "2.0.1",
+    "jsdom": "11.6.2",
     "minami": "^1.2.3",
     "mocha": "^3.4.2",
     "nyc": "^11.0.3",
     "rimraf": "^2.6.1",
-    "semantic-release": "8.2.0",
+    "semantic-release": "^15.13.12",
     "webpack": "^2.6.1",
     "webpack-dev-server": "2.9.3",
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
+    "crypto-js": "3.1.9-1",
     "lodash": "^4.17.4",
-    "prop-types": "15.6.0"
+    "prop-types": "15.6.0",
+    "store": "2.0.12",
+    "superagent": "3.8.0"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

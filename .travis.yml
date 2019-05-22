@@ -12,12 +12,9 @@ node_js:
 before_script:
   - npm prune
 script:
-  - npm run validate
-after_success:
-  - npm run report:coverage
   - cp -r $TRAVIS_BUILD_DIR/src/* $TRAVIS_BUILD_DIR/
   - rm -rf $TRAVIS_BUILD_DIR/src
-  - npm run semantic-release
+  - npx semantic-release
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
