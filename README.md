@@ -10,13 +10,13 @@ $ npm i -S @1studio/utils
 ```
 Transpiler for the Flow:
 ```shell
-$ npm i -D babel-loader babel-preset-env babel-preset-flow babel-minify babel-plugin-transform-class-properties
+$ npm i -D babel-loader babel-preset-env babel-preset-flow babel-minify babel-plugin-transform-class-properties babel-plugin-transform-object-rest-spread
 ```
 .babelrc
 ```json
 {
   "presets": ["flow", "env"],
-  "plugins": ["transform-class-properties"],
+  "plugins": ["transform-class-properties", "transform-object-rest-spread"],
   "env": {
     "production": {
       "presets": ["babel-minify"]
