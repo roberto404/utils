@@ -29,12 +29,12 @@ const toCSV = (items, hook) =>
       {
         return column;
       }
-      else if (typeof column.title === 'string')
+      else if (typeof column === 'object' && typeof column.title === 'string')
       {
         return column.title;
       }
       // react element
-      else if (typeof column.title.props === 'object')
+      else if (typeof column === 'object' && column.title && typeof column.title.props === 'object')
       {
         return column.title.props.children
           .map(item => (typeof item === 'string' ? item : ''))
