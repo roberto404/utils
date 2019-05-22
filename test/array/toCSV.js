@@ -29,7 +29,7 @@ const hook = {
 
 should();
 
-describe.only('toCSV', () =>
+describe('toCSV', () =>
 {
   it('basic', () =>
   {
