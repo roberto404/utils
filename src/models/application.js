@@ -36,7 +36,10 @@ const StoreType = PropTypes.shape({
   subscribe: PropTypes.func.isRequired,
 });
 
-const AVAILABLE_LISTENERS = ['orientation', 'keydown'];
+/**
+ * https://developer.mozilla.org/en-US/docs/Web/Events
+ */
+const AVAILABLE_LISTENERS = ['orientation', 'keydown', 'click'];
 
 
 /* !- Flow Types */
@@ -453,7 +456,7 @@ export default (() =>
      * Compare the keyboard event and key
      * @param {string} keyCode shortcut: "CTRL+S", "CTRL+SHIFT+S"
      */
-    static isShortcut(keyCode: string, event: SyntheticKeyboardEvent<>) :boolean // eslint-disable-line
+    isShortcut(keyCode: string, event: SyntheticKeyboardEvent<>) :boolean // eslint-disable-line
     {
       // shiftKey: true
       // ctrlKey: true
