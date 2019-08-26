@@ -291,6 +291,8 @@ export default (() =>
         },
       );
 
+      this.vendors = [];
+
       window.addEventListener('orientationchange', this.OrientationChangeListener);
 
       this.dispatch();
@@ -379,6 +381,7 @@ export default (() =>
       // #todo !!!!!!!!!!!!!!!!!!!!!!!!
       // config = privateProps.get(this).config;
       // privateProps.add(this, { config });
+      // default title-t megtartani / rs kontakt2 getPageTitle használja a régi eléréséhez
       document.getElementsByTagName('title')[0].innerHTML = title;
     }
 
@@ -533,6 +536,99 @@ export default (() =>
           && shortcuts.some(shortcut => isMatch(listener, shortcut)),
         )
         .forEach(listener => this.removeListener(listener.handler));
+    }
+
+
+    loadVendor(url, callback)
+    {
+      const regex = /\.(js|css)(\?.*)?$/;
+
+      const matches = regex.exec(url);
+
+      if (matches === null)
+      {
+        return false;
+      }
+
+      const extension = matches[1];
+
+
+      const vendor = this.vendors.find(vendor => vendor.url === url);
+
+      if (vendor)
+      {
+        if (typeof callback === 'function')
+        {
+          if (vendor.status)
+          {
+            callback()
+          }
+          else
+          {
+            vendor.callback.push(callback);
+          }
+        }
+      }
+      else
+      {
+        this.vendors.push({
+          url,
+          extension,
+          callback: [callback]
+        });
+
+        const vendorListener = (event) =>
+        {
+          if (event.type === 'load')
+          {
+            const vendor = this.vendors.find(vendor => vendor.url === url);
+
+            vendor.status === true;
+            vendor.callback.forEach((cb) =>
+            {
+              if (typeof cb === 'function')
+              {
+                cb();
+              }
+            });
+            vendor.callback = [];
+          }
+        }
+
+        let element;
+
+        switch (extension)
+        {
+          case 'js':
+          {
+            element = document.createElement('script');
+
+            element.type = 'text/javascript';
+            element.async = false; // Load in order
+            element.src = url;
+
+            break;
+          }
+
+          case 'css':
+          {
+            element = document.createElement('link');
+
+            element.href = url;
+            element.rel = 'stylesheet';
+
+            break;
+          }
+        }
+
+        element.onreadystatechange = vendorListener;
+
+        //  page has finished loading.
+        element.addEventListener('load', vendorListener);
+        element.addEventListener('error', vendorListener);
+
+        document.getElementsByTagName('body')[0].appendChild(element);
+      }
     }
 
     /* !- Listeners */
