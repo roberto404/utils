@@ -1,12 +1,21 @@
 import browser from './browser';
 
-const print = (elementId) =>
+const print = (element, callback) =>
 {
-  const printElement = document.getElementById(elementId);
+  let printElement;
 
-  if (!printElement)
+  if (element instanceof HTMLElement)
   {
-    return;
+    printElement = element;
+  }
+  else
+  {
+    printElement = document.getElementById(element);
+
+    if (!printElement)
+    {
+      return;
+    }
   }
 
   // Create a new iframe or embed element (IE prints blank pdf's if we use iframe)
@@ -28,6 +37,7 @@ const print = (elementId) =>
   // Body: Fill target content
   iframeElement.contentWindow.document.body.innerHTML = printElement.innerHTML;
   iframeElement.contentWindow.document.body.setAttribute('id', 'printFrame');
+  iframeElement.contentWindow.document.body.setAttribute('style', 'background-color: white');
 
   // Focus
   iframeElement.focus();
@@ -53,7 +63,18 @@ const print = (elementId) =>
     }
 
     // Remove DOM printableElement
-    document.getElementsByTagName('body')[0].removeChild(iframeElement);
+    setTimeout(
+      () =>
+      {
+        document.getElementsByTagName('body')[0].removeChild(iframeElement);
+
+        if (callback)
+        {
+          callback();
+        }
+      },
+      1000,
+    );
   };
 };
 
