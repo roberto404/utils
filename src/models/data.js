@@ -12,6 +12,7 @@ import checkPropTypes from '../propType/checkPropTypes';
 import sort from '../array/sort';
 import toNumber, { NOT_NAN_REGEX } from '../string/toNumber';
 import clamp from '../math/clamp';
+import pivotTable, { collectionGroupBy } from '../array/pivotTable';
 
 import type { dataType, orderType, filterType, paginateType, sortMethodType } from './data.type';
 
@@ -676,138 +677,23 @@ class Data
 
 
   /**
-  * It returns grouped results
-  * @param  {string} field    grouping result by this object key
-  * @param  {function} [labelIteratee = (records, field) => field]
-  * group field value format method. Default return original value
-  * @param  {function} [valueIteratee = (records, field) => records.length]
-  * group field items method. Default is count group elements
-  *
-  *
-  * @example
-  * <caption>Grouping by date, where the value sum every record person property
-  * [{date: '2016-02-03', person: '3'}...]</caption>
-  * // return {'2016-02-03': 22, '2016-02-04': 25 }
-  * groupByResults('date', (value, key) => (_.sum(_.map(value, i => parseInt(i.person)))))
-  *
-  * // grouping by category where the value max id each group
-  *
-  * dataModel.getResultsGroupBy(
-  *   'category',
-  *   undefined,
-  *   records => Math.max(...records.map(record => record['id'])),
-  * )
-  *
-  *
-  * @return {object}          {'group1': valueIteratee return, 'group2': valueIteratee return}
+  * It returns grouped results about the data filtered _results
   */
   getResultsGroupBy(
     field: string,
-    labelIteratee?: (groupRecords: dataType, groupField: string) => string
-      = (groupRecords, groupField) => groupField,
+    labelIteratee?: (groupRecords: dataType, groupField: string) => string,
     valueIteratee?: (groupRecords: dataType, groupField: string) => number
-      = groupRecords => groupRecords.length,
-  ): Array<{ id: string, title: number }>
+  )
   {
-    return map(
-      groupBy(this.results, x => x[field]),
-      (groupRecords, groupField) =>
-      ({
-        id: labelIteratee(groupRecords, groupField),
-        title: valueIteratee(groupRecords, groupField),
-      }),
-    );
+    return collectionGroupBy(this.results, field, labelIteratee, valueIteratee);
   }
 
   /**
    * Calculate a PivotTable about the data filtered _results
-   * @param  {string} column Observed record field
-   * @param  {function} method this method get an array results -> column value
-   * @param  {string} [group]  other column which unique values showes each observed field value
-   * @return {number|object}
-   * @since 3.2.0
-   * @example
-   * dataModel.getPivotTable('gender', countUnique)
-   * // -> 2
-   *
-   * dataModel.getPivotTable('visits', max, 'gender')
-   * // ->[
-   *  { id: '1', title: '2017-07-23' },
-   *  { id: '2', title: '2017-07-22' },
-   *  { id: 'max', title: '2017-07-23' },
-   * ]
-   *
-   * data.getPivotTable(countUnique)
-   * // ->
-   * { id: 4, name: 4, gender: 2, visits: 4 }
    */
   getPivotTable(propColumn: string|Function, propMethod?: Function, group?: string)
   {
-    if (typeof propColumn === 'undefined')
-    {
-      return null;
-    }
-
-    if (typeof propColumn === 'string' && typeof propMethod === 'function')
-    {
-      const column = propColumn;
-      const method = propMethod;
-
-      const collectData = data =>
-        data.reduce(
-          (result, record) =>
-          {
-            const value = record[column];
-
-            if (typeof value !== 'undefined')
-            {
-              result.push(
-                isNaN(value) ? value : parseFloat(value),
-              );
-            }
-
-            return result;
-          },
-          [],
-        );
-
-      const data = collectData(this.results);
-
-      let results = [];
-
-      if (group)
-      {
-        results = this.getResultsGroupBy(
-          group,
-          undefined,
-          records => method(records.map(record => record[column])),
-        );
-      }
-
-      results.push({
-        id: method.name,
-        title: data.length ? method(data) : 0,
-      });
-
-      return (results.length === 1) ? results[0].title : results;
-    }
-    else if (typeof propColumn === 'function')
-    {
-      const method = propColumn;
-      const columns = Object.keys(this.results[0]);
-
-      return columns.reduce(
-        (result, column) =>
-        {
-          const newResult = result;
-
-          newResult[column] = this.getPivotTable(column, method);
-          return newResult;
-        },
-        {},
-      );
-    }
-    return null;
+    return pivotTable(this.results, propColumn, propMethod, group);
   }
 
   /**

@@ -53,22 +53,22 @@ const settings = {
 
 const Person: Data = new Data(rawData, settings);
 
-Person.order = { column: 'visits' };
-Person.filters = [
-  {
-    id: "id",
-    handler: (a,b) => a,
-    status: true,
-  },
-];
-
-Person.paginate = {
-  page: 3,
-  limit: 1,
-};
-
-// console.log(
+// Person.order = { column: 'visits' };
+// Person.filters = [
+//   {
+//     id: "id",
+//     handler: (a,b) => a,
+//     status: true,
+//   },
+// ];
 //
-//   Person.filters,
-//   // Person.getResultsGroupBy('gender', (a, b) => a.name),
-// );
+// Person.paginate = {
+//   page: 3,
+//   limit: 1,
+// };
+
+console.log(
+
+  // Person.filters,
+  Person.getResultsGroupBy('gender', (a, b) => a.name),
+);

@@ -11,6 +11,9 @@ import unique from './array/unique';
 import sort from './array/sort';
 import toCSV from './array/toCSV';
 import produceNumericArray from './array/produceNumericArray';
+import pivotTable from './array/pivotTable';
+import getCollectionProp from './array/getCollectionProp';
+
 
 export {
   count,
@@ -19,6 +22,8 @@ export {
   sort,
   toCSV,
   produceNumericArray,
+  pivotTable,
+  getCollectionProp,
 };
 
 export default {
@@ -28,4 +33,6 @@ export default {
   sort,
   toCSV,
   produceNumericArray,
+  pivotTable,
+  getCollectionProp,
 };
