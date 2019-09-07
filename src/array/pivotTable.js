@@ -76,18 +76,18 @@ export const collectionGroupBy = (
  * // => { id: 6.5, name: NaN, gender: 1.3333333333333333, age: 26.5, visits: NaN }
  *
  */
-const pivotTable = (data: Array<{}>, prop?: string|Function, method?: Function, group?: string) =>
+const pivotTable2 = function (data: Array<{}>, prop?: string|Function, method?: Function, group?: string)
 {
   if (typeof prop === 'undefined' || Array.isArray(data) === false)
   {
     return null;
   }
 
+  let result;
+
   if (typeof prop === 'string' && typeof method === 'function')
   {
     let results = [];
-
-
 
     if (group)
     {
@@ -98,7 +98,7 @@ const pivotTable = (data: Array<{}>, prop?: string|Function, method?: Function, 
       {
         groupsIndex++;
 
-        const result = method(getCollectionProp(groupData, prop));
+        const groupResult = method(getCollectionProp(groupData, prop));
 
         let child;
 
@@ -113,13 +113,13 @@ const pivotTable = (data: Array<{}>, prop?: string|Function, method?: Function, 
         {
           child.push({
             id: method.name || 'result',
-            title: result,
+            title: groupResult,
           });
 
           return child;
         }
 
-        return result;
+        return groupResult;
       }
 
       /**
@@ -147,21 +147,158 @@ const pivotTable = (data: Array<{}>, prop?: string|Function, method?: Function, 
       title: values.length ? method(values) : 0,
     });
 
-    return (results.length === 1) ? results[0].title : results;
+    result = (results.length === 1) ? results[0].title : results;
   }
   else if (typeof prop === 'function')
   {
     const method = prop;
     const columns = Object.keys(data[0]);
 
-    return columns.reduce(
-      (result, column) => ({
-        ...result,
+    result = columns.reduce(
+      (results, column) => ({
+        ...results,
         [column]: pivotTable(data, column, method),
       }),
       {},
     );
   }
+
+  // if (this instanceof pivotTable)
+  if (this)
+  {
+    this.result = result;
+  }
+
+  return result;
 }
+
+const pivotTable = function (data: Array<{}>, prop?: string|Function, method?: Function, group?: string|Array<string>)
+{
+  if (typeof prop === 'undefined' || Array.isArray(data) === false)
+  {
+    return null;
+  }
+
+  let result;
+
+  if (typeof prop === 'string' && typeof method === 'function')
+  {
+    let results = [];
+
+    if (group)
+    {
+      const groups = Array.isArray(group) ? group : [group];
+      let groupsIndex = 0;
+
+      const groupDataIterator = (groupData) =>
+      {
+        groupsIndex++;
+
+        const groupResult = method(getCollectionProp(groupData, prop));
+
+        let child;
+
+        if (groupsIndex < groups.length)
+        {
+          child = collectionGroupBy(groupData, groups[groupsIndex], undefined, groupDataIterator);
+        }
+
+        groupsIndex--;
+
+        if (child)
+        {
+          child.push({
+            id: method.name || 'result',
+            title: groupResult,
+          });
+
+          return child;
+        }
+
+        return groupResult;
+      }
+
+      /**
+       * Collect data by group props. Iterate groups and call method every group
+       * @type {array} [{ id: 'male', title: 2 }, { id: 'male', title: 2 }]
+       * id: group field value,
+       * title: calculated method results (ex. count, sum, mean ...)
+       */
+      results = collectionGroupBy(
+        data,
+        groups[0],
+        undefined,
+        groupDataIterator,
+      );
+    }
+
+    /**
+     * @example
+     * // => [1,2,1,1,1,2,1]
+     */
+    const values = getCollectionProp(data, prop);
+
+    results.push({
+      id: method.name || 'result',
+      title: values.length ? method(values) : 0,
+    });
+
+    result = (results.length === 1) ? results[0].title : results;
+  }
+  else if (typeof prop === 'function')
+  {
+    const method = prop;
+    const columns = Object.keys(data[0]);
+
+    result = columns.reduce(
+      (results, column) => ({
+        ...results,
+        [column]: pivotTable(data, column, method),
+      }),
+      {},
+    );
+  }
+
+  if (this instanceof pivotTable)
+  {
+    this.result = result;
+    return;
+  }
+
+   return result;
+}
+
+pivotTable.prototype =
+{
+  /**
+   * Convert pivotTable data to collection
+   * @example
+   * { id: '2017-07-23', title: [ { id: 'male', title: 8 }, { id: 'female', title: 4 }, { id: 'count', title: 12 } ] }
+   * // => [{ id, male, femail, count }, ... ]
+   */
+  toArray: function(transform)
+  {
+    if (!this.result)
+    {
+      return [];
+    }
+    
+    return this.result.map(({ id, title }) =>
+    {
+      const record = {id};
+
+      if (Array.isArray(title))
+      {
+        title.forEach(child => record[child.id] = child.title);
+      }
+      else
+      {
+        record[id] = title;
+      }
+
+      return typeof transform === 'function' ? transform(record) : record;
+    });
+  },
+};
 
 export default pivotTable;

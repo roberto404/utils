@@ -29,6 +29,8 @@ const data = [
 
 
 
+const pivot = new pivotTable(data, 'age', count, ['visits', 'gender']);
+
 console.log(
 
   // pivotTable(data, 'gender', count),
@@ -52,6 +54,16 @@ console.log(
   // pivotTable(data, 'age', mean, ['visits', 'gender']),
   // => { id: '2017-07-23', title: [ { id: '1', title: 8 }, { id: '2', title: 4 }, { id: 'mean', title: 12 } ] }, ...
 
-  pivotTable(data, mean),
+  // pivotTable(data, mean),
   // => { id: 6.5, name: NaN, gender: 1.3333333333333333, age: 26.5, visits: NaN }
+
+
+  // pivotTable(data, 'age', count, ['visits', 'gender']),
+
+  // pivot.toArray(),
+  // => [{ '1': 2, '2': 1, id: '2017-07-22', count: 3 },...]
+
+  pivot.toArray(record => ({ date: record.id, male: record['1'] || 0, female: record['2'] || 0 })),
+  // => [ { date: '2017-07-23', male: 1, female: 0 }, ...]
+
 );
