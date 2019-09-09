@@ -6,10 +6,14 @@
  */
 
 import clamp from './math/clamp';
+import nthroot from './math/nthroot';
+import simplify from './math/simplify';
 
-export { clamp };
+export { clamp, nthroot, simplify };
 
 export default
 {
   clamp,
+  nthroot,
+  simplify,
 };
