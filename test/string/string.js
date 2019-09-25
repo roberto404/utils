@@ -5,6 +5,7 @@ import {
   toNumber,
   encrypt,
   decrypt,
+  formatThousand,
 } from '../../src/string'
 
 should();
@@ -88,5 +89,17 @@ describe('Encrypt/decrypt', () =>
     const password = 'hellopass';
 
     decrypt(encrypt(text, password), password).should.to.equal(text);
+  });
+});
+
+describe('formatThousand', () =>
+{
+  it('normal use', () =>
+  {
+    formatThousand(1000000.25).should.to.equal('1 000 000.25');
+    formatThousand(1000000).should.to.equal('1 000 000');
+    formatThousand(1000000.25121).should.to.equal('1 000 000.25121');
+    formatThousand(100).should.to.equal('100');
+    formatThousand(1000000.25, '~').should.to.equal('1~000~000.25');
   });
 });

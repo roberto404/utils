@@ -12,6 +12,7 @@ import encrypt from './string/encrypt';
 import slugify from './string/slugify';
 import toNumber from './string/toNumber';
 import wordWrap from './string/wordWrap';
+import formatThousand from './string/formatThousand';
 
 export {
   capitalizeFirstLetter,
@@ -21,6 +22,7 @@ export {
   slugify,
   toNumber,
   wordWrap,
+  formatThousand,
 };
 
 export default
@@ -32,4 +34,5 @@ export default
   slugify,
   toNumber,
   wordWrap,
+  formatThousand,
 };
