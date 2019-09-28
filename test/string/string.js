@@ -25,7 +25,7 @@ describe('capitalizeFirstLetter', () =>
   });
 });
 
-describe('slugify', () =>
+describe.only('slugify', () =>
 {
   it('Normal', () =>
   {
@@ -37,6 +37,16 @@ describe('slugify', () =>
     slugify('íéáűúüóőö').should.to.equal('ieauuuooo');
     slugify('ŤŢŦȚ').should.to.equal('tttt');
     slugify('  lorém_Íp_sum').should.to.equal('lorem_ip_sum');
+  });
+
+  it('Wrong input', () =>
+  {
+    slugify(1111).should.to.equal('1111');
+    slugify([1, 2, 'bar']).should.to.equal('12bar');
+    slugify({ foo: 'bar' }).should.to.equal('[object_object]');
+    slugify(false).should.to.equal('false');
+    slugify(undefined).should.to.equal('');
+    slugify(null).should.to.equal('');
   });
 });
 
