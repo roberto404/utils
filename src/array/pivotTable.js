@@ -107,7 +107,7 @@ const pivotTable2 = function (data: Array<{}>, prop?: string|Function, method?: 
           child = collectionGroupBy(groupData, groups[groupsIndex], undefined, groupDataIterator);
         }
 
-        groupsIndex--;
+        groupsIndex -= 1;
 
         if (child)
         {
