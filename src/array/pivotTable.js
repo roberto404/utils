@@ -96,7 +96,7 @@ const pivotTable2 = function (data: Array<{}>, prop?: string|Function, method?: 
 
       const groupDataIterator = (groupData) =>
       {
-        groupsIndex++;
+        groupsIndex += 1;
 
         const groupResult = method(getCollectionProp(groupData, prop));
 
