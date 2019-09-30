@@ -112,7 +112,7 @@ const pivotTable2 = function (data: Array<{}>, prop?: string|Function, method?: 
         if (child)
         {
           child.push({
-            id: '_result',
+            id: method.name || 'result',
             title: groupResult,
           });
 
@@ -282,7 +282,7 @@ pivotTable.prototype =
     {
       return [];
     }
-
+    
     return this.result.map(({ id, title }) =>
     {
       const record = {id};
