@@ -25,7 +25,7 @@ describe('capitalizeFirstLetter', () =>
   });
 });
 
-describe.only('slugify', () =>
+describe('slugify', () =>
 {
   it('Normal', () =>
   {

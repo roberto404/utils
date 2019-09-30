@@ -422,19 +422,26 @@ class Data
 
         const field = record[this.order.column] || '';
 
-        // integer
-        if (typeof field === 'number')
-        {
-          this._results = sort(this._results, (a, b) =>
-            (a[this.order.column] || 0) >= (b[this.order.column] || 0),
-          );
-        }
+
         // number in string format
-        else if (!isNaN(field))
+        if (!isNaN(field))
         {
           this._results = sort(this._results, (a, b) =>
-            parseFloat(a[this.order.column] || 0) >= parseFloat(b[this.order.column] || 0),
-          );
+          {
+            /**
+             * deviant situaction: First record seem like a number
+             * @example
+             * [{ title: '1' }, { title: 'abc' }...]
+             */
+            if (isNaN(a) || isNaN(b))
+            {
+              return String(a[this.order.column])
+                .toLowerCase()
+                .localeCompare(String(b[this.order.column]).toLowerCase()) === 1;
+            }
+
+            return parseFloat(a[this.order.column] || 0) >= parseFloat(b[this.order.column] || 0);
+          });
         }
         // special numberic field (like currency)
         else if (typeof field === 'string' && NOT_NAN_REGEX.test(field))

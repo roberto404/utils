@@ -190,6 +190,36 @@ describe('Model: Data:', () =>
     dataModel.results.should.to.deep.equal(sampleData);
   });
 
+  it('Set order seems like isNaN', () =>
+  {
+    const results = [
+      { id: 4, title: 1 },
+      { id: 1, title: '2' },
+      { id: 3, title: 'abc' },
+      { id: 2, title: 'cba' },
+    ];
+
+    const isNanSampleData1 = [
+      { id: 1, title: '2' },
+      { id: 2, title: 'cba' },
+      { id: 3, title: 'abc' },
+      { id: 4, title: 1 },
+    ];
+
+    const isNanSampleData2 = [
+      { id: 4, title: 1 },
+      { id: 2, title: 'cba' },
+      { id: 3, title: 'abc' },
+      { id: 1, title: '2' },
+    ];
+
+    const dataModel1 = new Data(isNanSampleData1, { order: { column: 'title', direction: 'asc' } });
+    dataModel1.results.should.to.deep.equal(results);
+
+    const dataModel3 = new Data(isNanSampleData2, { order: { column: 'title', direction: 'asc' } });
+    dataModel3.results.should.to.deep.equal(results);
+  });
+
   it('Filter', () =>
   {
     let firstChar = 'f';
