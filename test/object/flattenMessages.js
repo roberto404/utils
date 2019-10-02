@@ -1,5 +1,5 @@
 import { should } from 'chai';
-import flattenMessages from '../../src/object/flattenMessages';
+import flattenMessages, { flattenMessagesRevert } from '../../src/object/flattenMessages';
 
 should();
 
@@ -29,5 +29,16 @@ describe('flattenMessages', () =>
   it('perfect attributes', () =>
   {
     flattenMessages(nestedMessages).should.to.be.deep.equal(messages);
+  });
+});
+
+describe('flattenMessagesRevert', () =>
+{
+  it('perfect attributes', () =>
+  {
+    const input = { ...nestedMessages };
+    delete input.foo4;
+
+    flattenMessagesRevert(flattenMessages(input)).should.to.be.deep.equal(input);
   });
 });
