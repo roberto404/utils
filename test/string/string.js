@@ -6,6 +6,7 @@ import {
   encrypt,
   decrypt,
   formatThousand,
+  random,
 } from '../../src/string'
 
 should();
@@ -111,5 +112,14 @@ describe('formatThousand', () =>
     formatThousand(1000000.25121).should.to.equal('1 000 000.25121');
     formatThousand(100).should.to.equal('100');
     formatThousand(1000000.25, '~').should.to.equal('1~000~000.25');
+  });
+});
+
+describe('random', () =>
+{
+  it('normal use', () =>
+  {
+    random().length.should.to.equal(28);
+    random(2).length.should.to.equal(2);
   });
 });

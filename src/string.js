@@ -13,6 +13,7 @@ import slugify from './string/slugify';
 import toNumber from './string/toNumber';
 import wordWrap from './string/wordWrap';
 import formatThousand from './string/formatThousand';
+import random from './string/random';
 
 export {
   capitalizeFirstLetter,
@@ -22,6 +23,7 @@ export {
   slugify,
   toNumber,
   wordWrap,
+  random,
   formatThousand,
 };
 
@@ -34,5 +36,6 @@ export default
   slugify,
   toNumber,
   wordWrap,
+  random,
   formatThousand,
 };
