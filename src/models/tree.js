@@ -7,6 +7,7 @@ import forEach from 'lodash/forEach';
 import map from 'lodash/map';
 import reduce from 'lodash/reduce';
 import capitalizeFirstLetter from '../string/capitalizeFirstLetter';
+import slugify from '../string/slugify';
 
 export const WHITESPACE = '\xA0';
 
@@ -202,14 +203,39 @@ class Tree
     return results;
   }
 
-  getItem = (id) =>
+  /**
+   * Get element by id or path
+   * @example
+   * getItem(2);
+   * getItem('menu1/menu12/menu113')
+   */
+  getItem = (id: number|string): {}|boolean =>
   {
-    if (id === undefined || this._menu[`#${id}`] === undefined)
+    if (!isNaN(id) && this._menu[`#${id}`] !== undefined)
     {
-      return false;
+      return this._menu[`#${id}`];
     }
 
-    return this._menu[`#${id}`];
+    if (typeof id === 'string')
+    {
+      return id
+        .split('/')
+        .filter(i => i !== "")
+        .reduce(
+          (result, slug) =>
+          {
+            if (result)
+            {
+              result = this.getChildren(result.id).find(({ title }) => slugify(title) === slugify(slug));
+            }
+
+            return result;
+          },
+          {},
+        );
+    }
+
+    return false
   }
 
   /**
