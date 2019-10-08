@@ -433,7 +433,7 @@ class Data
              * @example
              * [{ title: '1' }, { title: 'abc' }...]
              */
-            if (isNaN(a) || isNaN(b))
+            if (isNaN(a[this.order.column]) || isNaN(b[this.order.column]))
             {
               return String(a[this.order.column])
                 .toLowerCase()
