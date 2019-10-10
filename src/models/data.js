@@ -500,9 +500,9 @@ class Data
     const args = {};
     this._filters.forEach(filter => args[filter.id] = filter.arguments); // eslint-disable-line
 
-    this._results = this._results.filter(record =>
+    this._results = this._results.filter((record, index) =>
       this._filters.every(filter =>
-        filter.status === false || filter.handler(record, ...filter.arguments, args, this),
+        filter.status === false || filter.handler(record, ...filter.arguments, args, this, index),
       ),
     );
   }
