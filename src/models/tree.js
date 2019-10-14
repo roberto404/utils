@@ -308,7 +308,14 @@ class Tree
     // }
   }
 
-  getPath = id => this._tree[`#${id}`];
+  getPath = (id: number): [number] => this._tree[`#${id}`];
+
+  getUrl = (id: number): string =>
+    (this.getPath(id) || []).map(parentId => slugify((this.getItem(parentId) || {}).title)).join('/');
+
+  getBreadcrumb = (id: number): {} =>
+    (this.getPath(id) || []).map(parentId => ({ ...this.getItem(parentId), url: this.getUrl(parentId) }));
+
 }
 
 /* eslint-enable */
