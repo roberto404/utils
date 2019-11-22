@@ -1,3 +1,14 @@
+/**
+ * Return URL get params to object
+ * 
+ * @param  {String} [param=''] Observed get param key or get every param
+ * @return {Object}            params
+ * @example
+ * import getParam from '@1studio/utils/location/getParam';
+ * getParam('examples')
+ * // http://localhost:9009?example=caroussel
+ * //=> { examples: 'caroussel'}
+ */
 const getParam = (param = '') =>
 {
   const get = {};
