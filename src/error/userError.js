@@ -35,8 +35,7 @@ class UserError extends Error
   {
     super(message);
 
-    // this.stack = <call stack>; // non-standard, but most environments support it
-    // this.stack = (new Error()).stack;
+    this.stack = (new Error()).stack;
     this.name = this.constructor.name;
 
     this.code = error.code || '';

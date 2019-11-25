@@ -5,7 +5,7 @@ import isEqual from 'lodash/isEqual';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import has from 'lodash/has';
-import UserError from '/Users/roberto/Sites/utils/src/error/userError';
+import UserError from '../error/userError';
 import PropTypes, { checkPropTypes } from '../propType';
 import sort from '../array/sort';
 import toNumber, { NOT_NAN_REGEX } from '../string/toNumber';
