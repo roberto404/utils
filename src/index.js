@@ -9,6 +9,7 @@ import propType from './propType';
 import promise from './promise';
 import object from './object';
 import window from './window';
+import error from './error';
 
 export const lib = {
   array,
@@ -20,6 +21,7 @@ export const lib = {
   propType,
   string,
   window,
+  error,
 };
 
 export default lib;
