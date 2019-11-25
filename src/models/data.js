@@ -1,14 +1,12 @@
 // @flow
 
-import PropTypes from 'prop-types';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
-import groupBy from 'lodash/groupBy';
-import map from 'lodash/map';
 import get from 'lodash/get';
 import set from 'lodash/set';
 import has from 'lodash/has';
-import checkPropTypes from '../propType/checkPropTypes';
+import UserError from '/Users/roberto/Sites/utils/src/error/userError';
+import PropTypes, { checkPropTypes } from '../propType';
 import sort from '../array/sort';
 import toNumber, { NOT_NAN_REGEX } from '../string/toNumber';
 import clamp from '../math/clamp';
@@ -175,6 +173,19 @@ class Data
 
   set data(data: dataType)
   {
+    const errors = checkPropTypes(data, PROPTYPES.data, 'data') || [];
+
+    if (errors.length)
+    {
+      throw new UserError(
+        'Invalid data',
+        {
+          code: 'utils.models.data.setData',
+          dev: { errors, data },
+        },
+      );
+    }
+
     this._data = data;
     this.handle();
   }
