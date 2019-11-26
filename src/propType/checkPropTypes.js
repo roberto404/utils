@@ -43,10 +43,21 @@ const checkPropTypes = (
     propTypes,
     (result, validators, index) =>
     {
+      let subjectName = '';
+
+      try
+      {
+        subjectName = JSON.stringify(subject);
+      }
+      catch (e)
+      {
+        subjectName = '{}';
+      }
+
       const error = validators(
         subjects,
         index,
-        JSON.stringify(subject),
+        subjectName,
         objectName,
         null,
         ReactPropTypesSecret,
