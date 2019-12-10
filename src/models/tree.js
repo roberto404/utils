@@ -13,6 +13,8 @@ export const WHITESPACE = '\xA0';
 
 class Tree
 {
+  _root: number;
+
   /**
    * source data cached version (there is no need find method)
    * @type {Object}
@@ -71,6 +73,11 @@ class Tree
     }
 
     this.structure();
+  }
+
+  setRoot(id: number|string)
+  {
+    this._root = id.toString();
   }
 
   /* !- Private methods */
@@ -169,6 +176,7 @@ class Tree
     }
   }
 
+
   /**
    * Get element children's data object
    * @param  {int} id Parent's id
@@ -231,11 +239,13 @@ class Tree
 
             return result;
           },
-          {},
+          {
+            id: this._root,
+          },
         );
     }
 
-    return false
+    return false;
   }
 
   /**
@@ -308,7 +318,22 @@ class Tree
     // }
   }
 
-  getPath = (id: number): [number] => this._tree[`#${id}`];
+  getPath = (id: number): [number] =>
+  {
+    const tree = this._tree[`#${id}`];
+
+    if (this._root && tree)
+    {
+      const index = tree.indexOf(this._root);
+
+      if (index)
+      {
+        return [0, ...this._tree[`#${id}`].slice(index + 1)];
+      }
+    }
+
+    return tree;
+  }
 
   getUrl = (id: number): string =>
     (this.getPath(id) || []).map(parentId => slugify((this.getItem(parentId) || {}).title)).join('/');
