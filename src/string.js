@@ -14,6 +14,8 @@ import toNumber from './string/toNumber';
 import wordWrap from './string/wordWrap';
 import formatThousand from './string/formatThousand';
 import random from './string/random';
+import urlQueryEncoder from './string/urlQueryEncoder';
+import urlQueryDencoder from './string/urlQueryDencoder';
 
 export {
   capitalizeFirstLetter,
@@ -25,6 +27,8 @@ export {
   wordWrap,
   random,
   formatThousand,
+  urlQueryEncoder,
+  urlQueryDencoder,
 };
 
 export default
@@ -38,4 +42,6 @@ export default
   wordWrap,
   random,
   formatThousand,
+  urlQueryEncoder,
+  urlQueryDencoder,
 };
