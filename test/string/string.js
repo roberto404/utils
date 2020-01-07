@@ -20,9 +20,11 @@ describe('capitalizeFirstLetter', () =>
 
   it('Wrong attributes', () =>
   {
-    expect(capitalizeFirstLetter(null)).to.be.null;
-    expect(capitalizeFirstLetter()).to.be.undefined;
-    capitalizeFirstLetter({ foo: 'bar' }).should.to.deep.equal({ foo: 'bar' });
+
+    expect(capitalizeFirstLetter('')).to.be.empty;
+    expect(capitalizeFirstLetter(null)).to.be.empty;
+    expect(capitalizeFirstLetter()).to.be.empty;
+    capitalizeFirstLetter({ foo: 'bar' }).should.to.be.empty;
   });
 });
 

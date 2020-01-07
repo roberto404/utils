@@ -14,9 +14,9 @@
  */
 const capitalizeFirstLetter = (string: string): string =>
 {
-  if (typeof string !== 'string')
+  if (typeof string !== 'string' || typeof string[0] === 'undefined')
   {
-    return string;
+    return '';
   }
 
   return string[0].toUpperCase() + string.slice(1);
