@@ -24,6 +24,7 @@ export const PROPTYPE_FILTER = {
     PropTypes.number,
     PropTypes.bool,
     PropTypes.object,
+    PropTypes.array,
   ])),
   status: PropTypes.bool.isRequired,
 };
