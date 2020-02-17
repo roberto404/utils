@@ -1,4 +1,48 @@
 import browser from './browser';
+// import request from 'superagent';
+
+
+const printIframe = (element) =>
+{
+  // Focus
+  element.focus();
+
+  // If Edge or IE, try catch with execCommand
+  if (browser.isEdge() || browser.isIE())
+  {
+    try
+    {
+      element.contentWindow.document.execCommand('print', false, null);
+    }
+    catch (e)
+    {
+      element.contentWindow.print();
+    }
+  }
+  else
+  {
+    // Other browsers
+    element.contentWindow.print();
+  }
+};
+
+const removeIframe = (element, callback) =>
+{
+  // Remove DOM printableElement
+  setTimeout(
+    () =>
+    {
+      document.getElementsByTagName('body')[0].removeChild(element);
+
+      if (callback)
+      {
+        callback();
+      }
+    },
+    1000,
+  );
+};
+
 
 const print = (element, callback) =>
 {
@@ -11,11 +55,6 @@ const print = (element, callback) =>
   else
   {
     printElement = document.getElementById(element);
-
-    if (!printElement)
-    {
-      return;
-    }
   }
 
   // Create a new iframe or embed element (IE prints blank pdf's if we use iframe)
@@ -33,48 +72,35 @@ const print = (element, callback) =>
   stylesheet.rel = 'stylesheet';
   stylesheet.type = 'text/css';
   iframeElement.contentWindow.document.head.appendChild(stylesheet);
-
-  // Body: Fill target content
-  iframeElement.contentWindow.document.body.innerHTML = printElement.innerHTML;
   iframeElement.contentWindow.document.body.setAttribute('id', 'printFrame');
   iframeElement.contentWindow.document.body.setAttribute('style', 'background-color: white');
 
-  // Focus
-  iframeElement.focus();
-
   stylesheet.onload = () =>
   {
-    // If Edge or IE, try catch with execCommand
-    if (browser.isEdge() || browser.isIE())
+    if (printElement)
     {
-      try
-      {
-        iframeElement.contentWindow.document.execCommand('print', false, null);
-      }
-      catch (e)
-      {
-        iframeElement.contentWindow.print();
-      }
+      // Body: Fill target content
+      iframeElement.contentWindow.document.body.innerHTML = printElement.innerHTML;
+
+      printIframe(iframeElement);
+      removeIframe(iframeElement, callback);
     }
     else
     {
-      // Other browsers
-      iframeElement.contentWindow.print();
-    }
-
-    // Remove DOM printableElement
-    setTimeout(
-      () =>
+      iframeElement.onload = () =>
       {
-        document.getElementsByTagName('body')[0].removeChild(iframeElement);
+        setTimeout(
+          () =>
+          {
+            printIframe(iframeElement);
+            removeIframe(iframeElement, callback);
+          },
+          1000,
+        );
+      };
 
-        if (callback)
-        {
-          callback();
-        }
-      },
-      1000,
-    );
+      iframeElement.src = element;
+    }
   };
 };
 
