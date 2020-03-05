@@ -63,9 +63,19 @@ export const flattenMessagesRevert = messages =>
           if (typeof value === 'string')
           {
             value = `'${value}'`;
+
+            eval(`${depth.join('.')} = ${value}`)
+          }
+          else if (typeof value === 'number')
+          {
+            eval(`${depth.join('.')} = ${value}`)
+          }
+          else if (typeof value === 'object')
+          {
+            value = JSON.stringify(value);
+            eval(`${depth.join('.')} = JSON.parse(value)`)
           }
 
-          eval(`${depth.join('.')} = ${value}`)
         }
         else if (!eval(depth.join('.')))
         {
