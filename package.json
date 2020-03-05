@@ -81,7 +81,7 @@
     "rimraf": "^2.6.1",
     "semantic-release": "^15.13.12",
     "webpack": "^2.6.1",
-    "webpack-dev-server": "2.9.3",
+    "webpack-dev-server": "3.10.3",
     "webpack-merge": "^4.1.0"
   },
   "dependencies": {
