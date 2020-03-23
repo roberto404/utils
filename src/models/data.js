@@ -485,9 +485,9 @@ class Data
         else
         {
           this._results = sort(this._results, (a, b) =>
-            a[this.order.column]
+            (a[this.order.column] || '')
               .toLowerCase()
-              .localeCompare(b[this.order.column].toLowerCase()) === 1,
+              .localeCompare((b[this.order.column] || '').toLowerCase()) === 1,
           );
         }
 
