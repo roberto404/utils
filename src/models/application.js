@@ -461,6 +461,11 @@ export default (() =>
      */
     isShortcut(keyCode: string, event: SyntheticKeyboardEvent<>) :boolean // eslint-disable-line
     {
+      if (!event || typeof event.key === 'undefined')
+      {
+        return false;
+      }
+
       // shiftKey: true
       // ctrlKey: true
       // altKey: false
