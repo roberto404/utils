@@ -2,7 +2,7 @@ import browser from './browser';
 // import request from 'superagent';
 
 
-const printIframe = (element) =>
+export const printIframe = (element, callback) =>
 {
   // Focus
   element.focus();
@@ -24,9 +24,17 @@ const printIframe = (element) =>
     // Other browsers
     element.contentWindow.print();
   }
+
+  const callbackHook = () =>
+  {
+    callback(element);
+    window.removeEventListener('focus', callbackHook);
+  }
+
+  window.addEventListener('focus', callbackHook);
 };
 
-const removeIframe = (element, callback) =>
+export const removeIframe = (element, callback) =>
 {
   // Remove DOM printableElement
   setTimeout(
@@ -82,8 +90,13 @@ const print = (element, callback) =>
       // Body: Fill target content
       iframeElement.contentWindow.document.body.innerHTML = printElement.innerHTML;
 
-      printIframe(iframeElement);
-      removeIframe(iframeElement, callback);
+      setTimeout(
+        () =>
+        {
+          printIframe(iframeElement, element => removeIframe(element, callback));
+        },
+        1000,
+      );
     }
     else
     {
@@ -92,8 +105,7 @@ const print = (element, callback) =>
         setTimeout(
           () =>
           {
-            printIframe(iframeElement);
-            removeIframe(iframeElement, callback);
+            printIframe(iframeElement, element => removeIframe(element, callback));
           },
           1000,
         );
