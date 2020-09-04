@@ -16,6 +16,8 @@ import formatThousand from './string/formatThousand';
 import random from './string/random';
 import urlQueryEncoder from './string/urlQueryEncoder';
 import urlQueryDencoder from './string/urlQueryDencoder';
+import decimalToRoman from './string/decimalToRoman';
+
 
 export {
   capitalizeFirstLetter,
@@ -29,6 +31,7 @@ export {
   formatThousand,
   urlQueryEncoder,
   urlQueryDencoder,
+  decimalToRoman,
 };
 
 export default
@@ -44,4 +47,5 @@ export default
   formatThousand,
   urlQueryEncoder,
   urlQueryDencoder,
+  decimalToRoman,
 };

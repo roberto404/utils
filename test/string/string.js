@@ -7,6 +7,7 @@ import {
   decrypt,
   formatThousand,
   random,
+  decimalToRoman,
 } from '../../src/string'
 
 should();
@@ -123,5 +124,13 @@ describe('random', () =>
   {
     random().length.should.to.equal(28);
     random(2).length.should.to.equal(2);
+  });
+});
+
+describe('decimalToRoman', () =>
+{
+  it('normal use', () =>
+  {
+    decimalToRoman(14).should.to.equal('XIV');
   });
 });

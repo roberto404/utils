@@ -4,7 +4,7 @@
 // or watch:
 // npx babel-watch ./examples/string
 
-import { capitalizeFirstLetter, formatThousand, random } from '../src/string';
+import { capitalizeFirstLetter, formatThousand, random, decimalToRoman } from '../src/string';
 
 capitalizeFirstLetter('lorem ipsum');
 // => Lorem ipsum
@@ -18,6 +18,11 @@ console.log(
   // => 1 000 000.25
 
 
-  random(8)
+  // random(8)
   // => 4gpze118
+
+
+  decimalToRoman(14)
+  // => XIV
+
 );
