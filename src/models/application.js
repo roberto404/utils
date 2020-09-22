@@ -67,6 +67,21 @@ export default (() =>
     );
   };
 
+  const getMedia = () =>
+  {
+    const node = document.createElement('DIV');
+    node.setAttribute('id', 'respond-to');
+
+    let media = window
+      .getComputedStyle(document.body.appendChild(node))
+      .getPropertyValue('content');
+
+    media = media.replace(/"/g, '');
+    document.body.removeChild(node);
+
+    return media;
+  }
+
   /**
    * Read all html document config: Language, baseUrl, documentId
    * @type {Object} { lang, regionName, regionCode, baseDir, pathName, pageName, title }
@@ -157,17 +172,7 @@ export default (() =>
      * @type {String}
      * @public
      */
-    let media;
-
-    const node = document.createElement('DIV');
-    node.setAttribute('id', 'respond-to');
-
-    media = window
-      .getComputedStyle(document.body.appendChild(node))
-      .getPropertyValue('content');
-
-    media = media.replace(/"/g, '');
-    document.body.removeChild(node);
+    const media = getMedia();
 
 
     return {
@@ -256,6 +261,9 @@ export default (() =>
       {
         throw new Error('Application settings error.');
       }
+
+      // Add useragent to html
+      window.document.documentElement.setAttribute('data-useragent', (window.navigator || {}).userAgent);
 
       // Initial privateProps type
       privateProps.set(this, {});
@@ -354,7 +362,7 @@ export default (() =>
      */
     getMedia(): string
     {
-      return privateProps.get(this).config.document.media;
+      return getMedia();
     }
 
     static getOrientation(): string
