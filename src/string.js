@@ -17,6 +17,7 @@ import random from './string/random';
 import urlQueryEncoder from './string/urlQueryEncoder';
 import urlQueryDencoder from './string/urlQueryDencoder';
 import decimalToRoman from './string/decimalToRoman';
+import underscroreToCamelCase from './string/underscroreToCamelCase';
 
 
 export {
@@ -32,6 +33,7 @@ export {
   urlQueryEncoder,
   urlQueryDencoder,
   decimalToRoman,
+  underscroreToCamelCase,
 };
 
 export default
@@ -48,4 +50,5 @@ export default
   urlQueryEncoder,
   urlQueryDencoder,
   decimalToRoman,
+  underscroreToCamelCase,
 };

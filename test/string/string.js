@@ -8,6 +8,7 @@ import {
   formatThousand,
   random,
   decimalToRoman,
+  underscroreToCamelCase,
 } from '../../src/string'
 
 should();
@@ -132,5 +133,13 @@ describe('decimalToRoman', () =>
   it('normal use', () =>
   {
     decimalToRoman(14).should.to.equal('XIV');
+  });
+});
+
+describe('underscroreToCamelCase', () =>
+{
+  it('normal use', () =>
+  {
+    underscroreToCamelCase('lorem_ipsum').should.to.equal('LoremIpsum');
   });
 });
