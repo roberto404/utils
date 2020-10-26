@@ -1,6 +1,6 @@
 /**
  * Return URL get params to object
- * 
+ *
  * @param  {String} [param=''] Observed get param key or get every param
  * @return {Object}            params
  * @example
@@ -9,7 +9,7 @@
  * // http://localhost:9009?example=caroussel
  * //=> { examples: 'caroussel'}
  */
-const getParam = (param = '') =>
+const getParam = (param = '', query = location.search) =>
 {
   const get = {};
 
@@ -17,7 +17,7 @@ const getParam = (param = '') =>
   const regex = /([^=?&]+)=([^&]+)/g;
   let m;
 
-  while ((m = regex.exec(decodeURI(location.search))) !== null) // eslint-disable-line
+  while ((m = regex.exec(decodeURI(query))) !== null) // eslint-disable-line
   {
     get[m[1]] = m[2];
   }
