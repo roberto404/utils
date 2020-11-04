@@ -341,6 +341,26 @@ class Tree
   getBreadcrumb = (id: number): {} =>
     (this.getPath(id) || []).map(parentId => ({ ...this.getItem(parentId), url: this.getUrl(parentId) }));
 
+
+  findByUrl = (url: string): {} =>
+    String(url)
+      .split('/')
+      .reduce(
+        (item, url) =>
+          Object.keys(item).indexOf('id') === -1 ?
+            {}
+            :
+            this
+              .getChildren(item.id)
+              .find(({ id }) =>
+              {
+                const fullUrl = this.getUrl(parseInt(id));
+                return fullUrl.substring(fullUrl.lastIndexOf('/') + 1) === url;
+              }) || {}
+        ,
+        { id: undefined },
+      );
+
 }
 
 /* eslint-enable */
