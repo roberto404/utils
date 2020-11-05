@@ -39,7 +39,16 @@ const StoreType = PropTypes.shape({
 /**
  * https://developer.mozilla.org/en-US/docs/Web/Events
  */
-const AVAILABLE_LISTENERS = ['orientation', 'keydown', 'click', 'scroll', 'onscroll', 'touchmove', 'mousewheel'];
+const AVAILABLE_LISTENERS = [
+  'orientation',
+  'keydown',
+  'click',
+  'scroll',
+  'wheel',
+  'onscroll',
+  'touchmove',
+  'mousewheel',
+];
 
 
 /* !- Flow Types */
