@@ -26,7 +26,7 @@ const simplify = (
   value: number,
   root: number,
   units: Array<string>,
-  format?: func = ({ value, unit }) => (Math.round(value * 10) / 10) + unit
+  format?: Function = ({ value, unit }) => (Math.round(value * 10) / 10) + unit
 ): string|number =>
 {
   const nth = units.findIndex((unit, index) => Math.abs(value) / Math.pow(root, index) < root)
