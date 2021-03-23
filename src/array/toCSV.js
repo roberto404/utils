@@ -49,7 +49,7 @@ const toCSV = (items, hook) =>
   return header + items
     .map(item => Object
       .keys(columns)
-      .map(column => ENCLOSER + (item[column] || '') + ENCLOSER)
+      .map(column => ENCLOSER + (hook[column] && typeof hook[column].format === 'function' ? hook[column].format(item) : (item[column] || '')) + ENCLOSER)
       .join(DELIMITER))
     .join(TERMINATE) + TERMINATE + EXCEL_META;
 };
