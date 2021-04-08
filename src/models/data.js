@@ -680,7 +680,7 @@ class Data
 
     this.results.forEach((result) =>
     {
-      const valueOfFields = fields.map(currentField => `#${result[currentField]}`);
+      const valueOfFields = fields.map(currentField => `#${result[currentField]}`.replaceAll('.', '\u2024'));
 
       const pointer = valueOfFields.join('.');
 
