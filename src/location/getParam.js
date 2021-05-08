@@ -27,6 +27,11 @@ const getParam = (param = '', query = location.search) =>
     return get[param] || '';
   }
 
+  if (Object.keys(get).length === 0 && query[0] === '?')
+  {
+    return decodeURI(query).substring(1);
+  }
+
   return get;
 };
 
