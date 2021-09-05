@@ -53,6 +53,12 @@ const wordWrap = (
         currentLineLength = value.length + 1;
         return SEPARATOR + value;
       }
+
+      if (value.indexOf(SEPARATOR) != -1)
+      {
+        currentLineLength = (value.length - 1) - value.lastIndexOf('\n')
+      }
+
       return value;
     })
     .join(' ')
