@@ -13,6 +13,7 @@ import toCSV from './array/toCSV';
 import produceNumericArray from './array/produceNumericArray';
 import pivotTable from './array/pivotTable';
 import getCollectionProp from './array/getCollectionProp';
+import shiftSelect from './array/shiftSelect';
 
 
 export {
@@ -24,6 +25,7 @@ export {
   produceNumericArray,
   pivotTable,
   getCollectionProp,
+  shiftSelect,
 };
 
 export default {
