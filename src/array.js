@@ -14,12 +14,14 @@ import produceNumericArray from './array/produceNumericArray';
 import pivotTable from './array/pivotTable';
 import getCollectionProp from './array/getCollectionProp';
 import shiftSelect from './array/shiftSelect';
+import uniqSort from './array/uniqSort';
 
 
 export {
   count,
   countUnique,
   unique,
+  uniqSort,
   sort,
   toCSV,
   produceNumericArray,
@@ -32,6 +34,7 @@ export default {
   count,
   countUnique,
   unique,
+  uniqSort,
   sort,
   toCSV,
   produceNumericArray,
