@@ -4,7 +4,7 @@ import map from 'lodash/map';
 
 const DELIMITER = ',';
 const TERMINATE = '\n';
-const ENCLOSER = '';
+const ENCLOSER = '"';
 
 // automatically tell Excel to use that character as the separator
 const EXCEL_META = `sep=${DELIMITER}`;
