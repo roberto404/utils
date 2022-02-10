@@ -213,11 +213,14 @@ class Tree
 
   /**
    * Get element by id or path
+   * @param {string,number} id seek subject (id of menuitem or path)
+   * @param {boolean} subMatch [false] if true, find part of menu item.
+   * 
    * @example
    * getItem(2);
    * getItem('menu1/menu12/menu113')
    */
-  getItem = (id: number|string): {}|boolean =>
+  getItem = (id: number|string, subMatch: boolean = false): {}|boolean =>
   {
     if (!isNaN(id) && this._menu[`#${id}`] !== undefined)
     {
@@ -226,7 +229,7 @@ class Tree
 
     if (typeof id === 'string')
     {
-      return id
+      const menuItem = id
         .split('/')
         .filter(i => i !== "")
         .reduce(
@@ -243,6 +246,13 @@ class Tree
             id: this._root,
           },
         );
+
+      if (id && !menuItem && subMatch)
+      {
+        return this.getItem(id.substring(0, id.lastIndexOf('/')), true);
+      }
+
+      return menuItem; 
     }
 
     return false;
