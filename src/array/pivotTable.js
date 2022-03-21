@@ -30,7 +30,7 @@ export const collectionGroupBy = (
 ): Array<{ id: string, title: number }> =>
 {
   return map(
-    groupBy(data, x => x[prop]),
+    groupBy(data, x => typeof prop === 'function' ? prop(x) : x[prop]),
     (groupRecords, groupProp) =>
     ({
       id: labelIteratee(groupRecords, groupProp),
@@ -299,6 +299,64 @@ pivotTable.prototype =
       return typeof transform === 'function' ? transform(record) : record;
     });
   },
+
+  /**
+   * @param {Object} options { cols }
+   * @example
+   * [{ id, title: [{ id, title }, {id, title }] }, { id, title }]
+   * =>
+   * [{ 0: title#0, 1: title#1, children: [title#0, title#1...]}]
+   * 
+   */
+  toTable: function(pivot, options = {}, level = 0)
+  {
+    if (!pivot)
+    {
+      pivot = this.result || [];
+    }
+
+    /**
+     * create array column values => options.cols
+     */
+    if (options.cols && Array.isArray(options.cols[level]))
+    {
+      return options.cols[level]
+        .map(colId =>
+        {
+          const value = (pivot.find(({ id }) => id == colId) || {}).title;
+
+          if (Array.isArray(value))
+          {
+            return format(value, options, level + 1);
+          }
+
+          return value || '-';
+        });
+    }
+    
+    return pivot.map(record =>
+    {
+      if (Array.isArray(record.title))
+      {
+        const children = this.toTable(record.title, options, level + 1);
+
+        if (options.cols && Array.isArray(options.cols[level + 1]))
+        {
+          return [record.id, ...children];
+        }
+        (children.length - 2)
+
+        return {
+          0: record.id,
+          1: ['', '', '', children[children.length - 1][1]],
+          // 1: [...produceNumericArray(1, (children.length - 1), () => ''), children[children.length - 1][1]],
+          children: children.slice(0, -1),
+        }
+      }
+      
+      return [record.id, record.title];
+    })
+  }
 };
 
 export default pivotTable;
