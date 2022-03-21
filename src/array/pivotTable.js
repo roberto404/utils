@@ -308,12 +308,32 @@ pivotTable.prototype =
    * [{ 0: title#0, 1: title#1, children: [title#0, title#1...]}]
    * 
    */
-  toTable: function(pivot, options = {}, level = 0)
+  toTable: function()
   {
-    if (!pivot)
+    let pivot = this.result || [];
+    let options = {}
+    let level = 0;
+
+    Object.keys(arguments).forEach(i =>
     {
-      pivot = this.result || [];
-    }
+      const arg = arguments[i];
+
+      if (typeof arg === 'object')
+      {
+        if (Array.isArray(arg))
+        {
+          pivot = arg;
+        }
+        else
+        {
+          options = arg;
+        }
+      }
+      else
+      {
+        level = arg;
+      }
+    })
 
     /**
      * create array column values => options.cols
@@ -327,7 +347,7 @@ pivotTable.prototype =
 
           if (Array.isArray(value))
           {
-            return format(value, options, level + 1);
+            return this.toTable(value, options, level + 1);
           }
 
           return value || '-';
