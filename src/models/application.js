@@ -10,6 +10,8 @@ import PropTypes, { checkPropTypes } from '../propType';
 // 90Kb
 import Storage, { IMMORTAL_SESSIONTIME } from './storage';
 
+import capitalizeFirstLetter from '../string/capitalizeFirstLetter';
+
 
 /* !- Constants */
 
@@ -395,11 +397,27 @@ export default (() =>
      */
     static setPageTitle(title: string)
     {
-      // #todo !!!!!!!!!!!!!!!!!!!!!!!!
-      // config = privateProps.get(this).config;
-      // privateProps.add(this, { config });
-      // default title-t megtartani / rs kontakt2 getPageTitle használja a régi eléréséhez
       document.getElementsByTagName('title')[0].innerHTML = title;
+    }
+
+    setDocumentTitle = (title) =>
+    {
+      Application.setPageTitle(title);
+    }
+
+    setDocumentConfig = (props = {}) =>
+    {
+      Object.keys(props).forEach((propName) =>
+      {
+        if (
+          typeof this[`setDocument${capitalizeFirstLetter(propName)}`] === 'function'
+          && ['title'].indexOf(propName) !== -1
+        )
+        {
+          this[`setDocumentTitle`](props[propName]);
+        }
+      })
+      console.log(props);
     }
 
     /**
