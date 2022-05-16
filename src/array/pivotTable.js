@@ -4,6 +4,8 @@ import map from 'lodash/map';
 import groupBy from 'lodash/groupBy';
 import getCollectionProp from './getCollectionProp';
 
+export const SUMMARY_METHOD_NAME = 'summary';
+
 
 /**
 * It returns grouped results
@@ -76,102 +78,6 @@ export const collectionGroupBy = (
  * // => { id: 6.5, name: NaN, gender: 1.3333333333333333, age: 26.5, visits: NaN }
  *
  */
-const pivotTable2 = function (data: Array<{}>, prop?: string|Function, method?: Function, group?: string)
-{
-  if (typeof prop === 'undefined' || Array.isArray(data) === false)
-  {
-    return null;
-  }
-
-  let result;
-
-  if (typeof prop === 'string' && typeof method === 'function')
-  {
-    let results = [];
-
-    if (group)
-    {
-      const groups = Array.isArray(group) ? group : [group];
-      let groupsIndex = 0;
-
-      const groupDataIterator = (groupData) =>
-      {
-        groupsIndex += 1;
-
-        const groupResult = method(getCollectionProp(groupData, prop));
-
-        let child;
-
-        if (groupsIndex < groups.length)
-        {
-          child = collectionGroupBy(groupData, groups[groupsIndex], undefined, groupDataIterator);
-        }
-
-        groupsIndex -= 1;
-
-        if (child)
-        {
-          child.push({
-            id: '_result',
-            title: groupResult,
-          });
-
-          return child;
-        }
-
-        return groupResult;
-      }
-
-      /**
-       * Collect data by group props. Iterate groups and call method every group
-       * @type {array} [{ id: 'male', title: 2 }, { id: 'male', title: 2 }]
-       * id: group field value,
-       * title: calculated method results (ex. count, sum, mean ...)
-       */
-      results = collectionGroupBy(
-        data,
-        groups[0],
-        undefined,
-        groupDataIterator,
-      );
-    }
-
-    /**
-     * @example
-     * // => [1,2,1,1,1,2,1]
-     */
-    const values = getCollectionProp(data, prop);
-
-    results.push({
-      id: method.name || 'result',
-      title: values.length ? method(values) : 0,
-    });
-
-    result = (results.length === 1) ? results[0].title : results;
-  }
-  else if (typeof prop === 'function')
-  {
-    const method = prop;
-    const columns = Object.keys(data[0]);
-
-    result = columns.reduce(
-      (results, column) => ({
-        ...results,
-        [column]: pivotTable(data, column, method),
-      }),
-      {},
-    );
-  }
-
-  // if (this instanceof pivotTable)
-  if (this)
-  {
-    this.result = result;
-  }
-
-  return result;
-}
-
 const pivotTable = function (data: Array<{}>, prop?: string|Function, method?: Function, group?: string|Array<string>)
 {
   if (typeof prop === 'undefined' || Array.isArray(data) === false)
@@ -208,7 +114,7 @@ const pivotTable = function (data: Array<{}>, prop?: string|Function, method?: F
         if (child)
         {
           child.push({
-            id: method.name || 'result',
+            id: SUMMARY_METHOD_NAME,
             title: groupResult,
           });
 
@@ -239,7 +145,7 @@ const pivotTable = function (data: Array<{}>, prop?: string|Function, method?: F
     const values = getCollectionProp(data, prop);
 
     results.push({
-      id: method.name || 'result',
+      id: SUMMARY_METHOD_NAME,
       title: values.length ? method(values) : 0,
     });
 
@@ -376,7 +282,60 @@ pivotTable.prototype =
       
       return [record.id, record.title];
     })
-  }
+  },
+
+  /**
+   * Create cummulted data from Pivot table => reduce data source
+   * 
+   * 1. Data source
+   * { age: 21, gender: 1 }, { age: 21, gender: 1}, { age: 21, gender: 2}, { age: 22, gender: 1}
+   * 
+   * 2. Create Pivot: new PivotTable(data, 'id', count, ['age', 'gender']);
+   * { id: 21, title: [{ id: 1, title: 2 }, { id: 2, title: 1}]}, { id: 22, title: [{ id: 1, title: 1}]}
+   * 
+   * 3. toData(['age', 'gender'], 'count')
+   * { age: 21, gender: 1, count: 2 }, { age: 21, gender: 2, count: 1}, { age: 22, gender: 1, count: 1}
+   * 
+   * new PivotTable(toData, 'id', count, ['age', 'gender']) result is same width step 2.
+   * toData is a reduced data source.
+   * 
+   * 
+   * @param {Array} fields 
+   * @param {String} summary 
+   * @returns 
+   */
+  toData: function(fields, summary = SUMMARY_METHOD_NAME)
+  {
+    const resultReducer = (result, level = 0) =>
+      result.reduce(
+        (result, record) =>
+        {
+          if (record.id === SUMMARY_METHOD_NAME)
+          {
+            return result;
+          }
+
+          const field = Array.isArray(fields) && fields[level] !== undefined ? fields[level] : level.toString();
+
+          if (Array.isArray(record.title))
+          {
+            /**
+             * [2: 1, summary: 1], [2: 2, summary: 2]
+             */
+            result.push(...resultReducer(record.title, level + 1).map(item => ({ ...item, [field]: record.id })))
+          }
+          else
+          {
+            result.push({ [field]:record.id, [summary]: record.title});
+          }
+
+          return result;
+        },
+        [],
+      );
+
+    return resultReducer(this.result || []);
+  },
 };
 
 export default pivotTable;
