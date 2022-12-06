@@ -8,7 +8,7 @@ import {
   formatThousand,
   random,
   decimalToRoman,
-  underscroreToCamelCase,
+  snakeToCamelCase,
 } from '../../src/string'
 
 should();
@@ -136,10 +136,20 @@ describe('decimalToRoman', () =>
   });
 });
 
-describe('underscroreToCamelCase', () =>
+describe('snakeToCamelCase', () =>
 {
   it('normal use', () =>
   {
-    underscroreToCamelCase('lorem_ipsum').should.to.equal('LoremIpsum');
+    snakeToCamelCase('lorem_ipsum').should.to.equal('loremIpsum');
+  });
+
+  it('dot separated use', () =>
+  {
+    snakeToCamelCase('lorem.ipsum', false, '.').should.to.equal('loremIpsum');
+  });
+
+  it('PascalCase', () =>
+  {
+    snakeToCamelCase('lorem_ipsum', true).should.to.equal('LoremIpsum');
   });
 });
