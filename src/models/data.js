@@ -422,77 +422,78 @@ class Data
       if (typeof this.order.column === 'function')
       {
         this._results = sort(this._results, this.order.column);
-        return;
       }
-
-      // find not empty observed record
-      this._results.some((record) =>
+      else
       {
-        if (!record[this.order.column])
+        // find not empty observed record
+        this._results.some((record) =>
         {
-          return false;
-        }
-
-        const field = record[this.order.column] || '';
-
-
-        // number in string format
-        if (!isNaN(field))
-        {
-          this._results = sort(this._results, (a, b) =>
+          if (!record[this.order.column])
           {
-            /**
-             * deviant situaction: First record seem like a number
-             * @example
-             * [{ title: '1' }, { title: 'abc' }...]
-             */
-            if (isNaN(a[this.order.column]) || isNaN(b[this.order.column]))
+            return false;
+          }
+
+          const field = record[this.order.column] || '';
+
+
+          // number in string format
+          if (!isNaN(field))
+          {
+            this._results = sort(this._results, (a, b) =>
             {
-              return String(a[this.order.column])
+              /**
+               * deviant situaction: First record seem like a number
+               * @example
+               * [{ title: '1' }, { title: 'abc' }...]
+               */
+              if (isNaN(a[this.order.column]) || isNaN(b[this.order.column]))
+              {
+                return String(a[this.order.column])
+                  .toLowerCase()
+                  .localeCompare(String(b[this.order.column]).toLowerCase()) === 1;
+              }
+
+              return parseFloat(a[this.order.column] || 0) >= parseFloat(b[this.order.column] || 0);
+            });
+          }
+          // special numberic field (like currency)
+          else if (typeof field === 'string' && NOT_NAN_REGEX.test(field))
+          {
+            this._results = sort(this._results, (left, right) =>
+            {
+              let a = left[this.order.column] || '';
+              let b = right[this.order.column] || '';
+
+              // string looks like a number => convert to number
+              const aLikeNum = typeof a === 'string' && NOT_NAN_REGEX.test(a);
+              const bLikeNum = typeof b === 'string' && NOT_NAN_REGEX.test(b);
+
+              if (aLikeNum && (typeof b === 'number' || bLikeNum))
+              {
+                a = toNumber(a);
+              }
+
+              if (bLikeNum && typeof a === 'number')
+              {
+                b = toNumber(b);
+              }
+
+              return parseFloat(a || 0) >= parseFloat(b || 0);
+            });
+          }
+          // string compare
+          else
+          {
+            this._results = sort(this._results, (a, b) =>
+              (a[this.order.column] || '')
                 .toLowerCase()
-                .localeCompare(String(b[this.order.column]).toLowerCase()) === 1;
-            }
+                .localeCompare((b[this.order.column] || '').toLowerCase()) === 1,
+            );
+          }
 
-            return parseFloat(a[this.order.column] || 0) >= parseFloat(b[this.order.column] || 0);
-          });
-        }
-        // special numberic field (like currency)
-        else if (typeof field === 'string' && NOT_NAN_REGEX.test(field))
-        {
-          this._results = sort(this._results, (left, right) =>
-          {
-            let a = left[this.order.column] || '';
-            let b = right[this.order.column] || '';
-
-            // string looks like a number => convert to number
-            const aLikeNum = typeof a === 'string' && NOT_NAN_REGEX.test(a);
-            const bLikeNum = typeof b === 'string' && NOT_NAN_REGEX.test(b);
-
-            if (aLikeNum && (typeof b === 'number' || bLikeNum))
-            {
-              a = toNumber(a);
-            }
-
-            if (bLikeNum && typeof a === 'number')
-            {
-              b = toNumber(b);
-            }
-
-            return parseFloat(a || 0) >= parseFloat(b || 0);
-          });
-        }
-        // string compare
-        else
-        {
-          this._results = sort(this._results, (a, b) =>
-            (a[this.order.column] || '')
-              .toLowerCase()
-              .localeCompare((b[this.order.column] || '').toLowerCase()) === 1,
-          );
-        }
-
-        return true;
-      });
+          return true;
+        });
+      }
     }
 
     if (this.order.direction !== 'asc')
