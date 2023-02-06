@@ -1,0 +1,49 @@
+{
+  "version": "0.2.0",
+  "configurations":
+  [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Mocha Tests",
+      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "args": [
+        "--require",
+        "esm",
+        // "--require",
+        // "${workspaceFolder}/test/your-setup.js",
+        "--reporter",
+        "dot",
+        "--slow",
+        "5000",
+        "--colors",
+        "${workspaceFolder}/test/**/*.js",
+      ],
+      "internalConsoleOptions": "openOnSessionStart",
+      "skipFiles": [
+        "<node_internals>/**"
+      ]
+    },
+    {
+			"name": "Run mocha",
+			"type": "node",
+      "request": "launch",
+			"program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+			"stopOnEntry": false,
+      // "args": ["test/mocha.opts"],
+      "args": ["test/**/*.js", "--recursive", "--compilers js:babel-register", "--no-timeouts", "--colors"],
+			"cwd": "${workspaceRoot}",
+			"runtimeExecutable": null,
+			"env": { "NODE_ENV": "testing" }
+		},
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Program",
+      "skipFiles": [
+          "<node_internals>/**"
+      ],
+      "program": "${workspaceFolder}/src/index.js"
+    }
+  ]
+}

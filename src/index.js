@@ -1,13 +1,11 @@
-// @flow
-
+import array from './array';
 import geometry from './geometry';
 import math from './math';
 import models from './models';
-import array from './array';
-import string from './string';
-import propType from './propType';
-import promise from './promise';
 import object from './object';
+import promise from './promise';
+import propType from './propType';
+import string from './string';
 import window from './window';
 import error from './error';
 

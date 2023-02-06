@@ -1,16 +1,16 @@
 /**
  * Requires
  */
-const merge = require('webpack-merge');
-const { join } = require('path');
+const path  = require('path');
 
-/**
- * Variables
- */
+
+/* !-- Constants */
+
 const PATHS = {
-  src: join(__dirname, 'src'),
-  dist: join(__dirname, 'build'),
+  src: path.join(__dirname, 'src'),
+  dist: path.join(__dirname, 'build'),
 };
+
 
  /**
   * Common Configuration
@@ -27,7 +27,7 @@ const Common = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(j|t)s(x)?$/,
         exclude: [/node_modules/],
         use: [{
           loader: 'babel-loader',
@@ -35,6 +35,9 @@ const Common = {
       },
     ],
   },
+  resolve: {
+    extensions: ['.tsx', '.ts', '.js', '.jsx'],
+  }
 };
 
 
@@ -43,23 +46,33 @@ module.exports = (env) =>
   /**
    * Production Configuration
    */
-  if (env.prod)
+  if (env.production)
   {
-    return merge([
-      Common,
-    ]);
+    return {
+      ...Common,
+    };
   }
 
-  return merge([
-    Common,
+  return {
+    ...Common,
+    devtool: 'eval', // 'source-map',
+    devServer:
     {
-      devtool: 'eval',
-      devServer: {
-        contentBase: PATHS.dist,
-        compress: true,
-        port: 9000,
-        public: 'localhost:9000',
+      static: 
+      {
+        directory: Common.output.path,
+      },
+      compress: true,
+      hot: true,
+      liveReload: true,
+      port: 9000,
+      historyApiFallback: true,
+      open: {
+        target: ['http://localhost:9000'],
+        app: {
+          name: 'google chrome'
+        },
       },
     },
-  ]);
+  };
 };
