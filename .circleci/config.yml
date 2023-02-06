@@ -18,7 +18,7 @@ jobs:
     steps:
       - checkout
       - node/install:
-          node-version: "16"
+          node-version: "18"
       - node/install-packages
       - run:
           name: Move files
