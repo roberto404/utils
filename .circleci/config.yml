@@ -19,6 +19,9 @@ jobs:
       - checkout
       - node/install:
           node-version: "16"
+      - run:
+          name: Clean
+          command: npm ci
       - node/install-packages
       - run:
           name: Test
