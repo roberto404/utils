@@ -3,6 +3,5 @@ npm-debug.log
 .nyc_output/
 coverage
 build
-package-lock.json
 docs
 *docset
