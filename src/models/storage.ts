@@ -24,8 +24,6 @@ export const IMMORTAL_SESSIONTIME = 1000 * 365 * 24 * 60; // 1000 years
 export const MIN_TO_MSEC = 60 * 1000;
 
 
-/* !- Flow Types */
-
 type dataType =
 {
   timestamp?: number,

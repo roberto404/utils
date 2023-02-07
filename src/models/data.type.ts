@@ -1,6 +1,4 @@
 
-/* !- Flow Types */
-
 export type dataType = Array<{}>;
 
 export type orderType =

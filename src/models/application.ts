@@ -51,8 +51,6 @@ const AVAILABLE_LISTENERS = [
 ];
 
 
-/* !- Flow Types */
-
 type shortcutType =
 {
   keyCode: string,
