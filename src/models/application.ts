@@ -528,7 +528,7 @@ export default (() =>
      * Compare the keyboard event and key
      * @param {string} keyCode shortcut: "CTRL+S", "CTRL+SHIFT+S"
      */
-    isShortcut(keyCode: string, event: SyntheticKeyboardEvent<>) :boolean // eslint-disable-line
+    isShortcut(keyCode: string, event: KeyboardEvent) :boolean // eslint-disable-line
     {
       if (!event || typeof event.key === 'undefined')
       {
