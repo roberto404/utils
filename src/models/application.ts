@@ -563,7 +563,7 @@ export default (() =>
      ], 'collection');
 
      */
-    addShortcuts = (shortcuts: Array<shortcutType>, collection:? string): void =>
+    addShortcuts = (shortcuts: Array<shortcutType>, collection?: string): void =>
     {
       shortcuts.forEach((shortcut) =>
       {
