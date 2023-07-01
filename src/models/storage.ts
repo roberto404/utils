@@ -381,7 +381,15 @@ export default (() =>
     {
       const arrayKeys = Array.isArray(keys) ? keys : [keys];
 
-      arrayKeys.forEach(key => delete this.data[key]);
+      this.data = arrayKeys.reduce(
+        (result, key) =>
+        {
+          delete result[key];
+
+          return result;
+        },
+        this.data || {},
+      )
 
       return this.data;
     }
