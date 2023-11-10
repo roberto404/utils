@@ -21,8 +21,6 @@ const importJs = (src, callback) =>
 
   document.getElementsByTagName('body')[0].appendChild(script);
 
-  window.assets.push(script);
-
   return script;
 };
 
