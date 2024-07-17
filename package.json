@@ -11,7 +11,7 @@
     "validate:coverage": "nyc check-coverage --statelments 90 --branches 80 --functions 100 --lines 90",
     "report:coverage": "cat ./coverage/lcov.info | codecov",
     "start": "webpack-dev-server --open --progress --hot --color --env.dev",
-    "test": "mocha --require ts-node/register test/models/tree.ts",
+    "test": "mocha --require ts-node/register test/array/move.ts",
     "test:watch": "npm t -- --watch --watch-extensions ts --watch-files test/models/tree.ts",
     "test:debug": "npm t -- -w --inspect-brk",
     "test:coverage": "nyc npm t && nyc report --reporter=lcov",
