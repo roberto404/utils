@@ -30,7 +30,7 @@ export const gcdTwoNumbers = (a: number, b: number): number =>
  */
 const gcd = (
   numbers: Array<number>,
-): number|boolean =>
+): number|false =>
 {
   if (!Array.isArray(numbers))
   {
