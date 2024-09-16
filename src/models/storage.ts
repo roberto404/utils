@@ -1,6 +1,5 @@
 /* eslint-disable */
 
-
 // 10KB
 import store from 'store';
 
@@ -25,13 +24,12 @@ export const MIN_TO_MSEC = 60 * 1000;
 
 
 type dataType =
-{
-  timestamp?: number,
-};
+  {
+    timestamp?: number,
+  };
 
 
-export default (() =>
-{
+export default (() => {
   const privateProps = new WeakMap();
 
   /**
@@ -71,8 +69,7 @@ export default (() =>
   * // change session time in minutes
   * User.sessionTime = 20;
   */
-  class Storage
-  {
+  class Storage {
     /**
     * @constructs
     * @private
@@ -81,15 +78,13 @@ export default (() =>
     */
     constructor(
       data: {},
-      settings?: {
+      settings: {
         key?: string,
         password?: string,
         sessionTime?: number,
       } = {},
-    )
-    {
-      if (checkPropTypes(settings, PropTypes.object.isRequired))
-      {
+    ) {
+      if (checkPropTypes(settings, PropTypes.object.isRequired)) {
         throw new Error('Storage Settings error');
       }
 
@@ -99,8 +94,7 @@ export default (() =>
       this.password = settings.password;
       this.sessionTime = settings.sessionTime;
 
-      if (data)
-      {
+      if (data) {
         this.data = data;
       }
     }
@@ -119,19 +113,16 @@ export default (() =>
     * User.data({ name: 'John' });
     * // User.data => { name: 'John' }
     */
-    get data(): dataType
-    {
+    get data(): dataType {
       let data = privateProps.get(this).data || {};
 
-      if (isEmpty(data))
-      {
+      if (isEmpty(data)) {
         // read from local storage
         data = this._getLocalStorage();
       }
 
       // if data is outdated
-      if (!this._validate(data.timestamp))
-      {
+      if (!this._validate(data.timestamp)) {
         this.erase();
       }
 
@@ -149,20 +140,16 @@ export default (() =>
     * User.data({ name: 'John', thumbnail: 'john.jpg' });
     * // User.data.name => 'John'
     */
-    set data(data: {})
-    {
-      if (checkPropTypes(data, PropTypes.object))
-      {
+    set data(data: {}) {
+      if (checkPropTypes(data, PropTypes.object)) {
         throw new Error('Type of storage data have to Object');
       }
 
-      if (!data)
-      {
+      if (!data) {
         this.flush();
       }
 
-      if (!isEmpty(data))
-      {
+      if (!isEmpty(data)) {
         let next = {
           ...data,
           timestamp: new Date().getTime(),
@@ -172,8 +159,7 @@ export default (() =>
 
         next = JSON.stringify(next);
 
-        if (privateProps.get(this).password)
-        {
+        if (privateProps.get(this).password) {
           next = encrypt(next, privateProps.get(this).password);
         }
 
@@ -188,8 +174,7 @@ export default (() =>
     * Get LocalStorage key
     * @return {string}
     */
-    get key(): string
-    {
+    get key(): string {
       const props = privateProps.get(this) || {};
       return props.key || DEFAULT_KEY;
     }
@@ -199,21 +184,17 @@ export default (() =>
     * @param  {string} key
     * @return {void}
     */
-    set key(next: string): void
-    {
-      if (privateProps.get(this).data)
-      {
+    set key(next: string): void {
+      if (privateProps.get(this).data) {
         throw new Error('You cannot change Storage key, when data exist.');
       }
 
       let key;
 
-      if (checkPropTypes(next, PropTypes.string.isRequired))
-      {
+      if (checkPropTypes(next, PropTypes.string.isRequired)) {
         key = DEFAULT_KEY;
       }
-      else
-      {
+      else {
         key = next;
       }
 
@@ -224,10 +205,8 @@ export default (() =>
     * Encryption password, in production mode this data is protected
     * @return {string}
     */
-    get password(): string
-    {
-      if (process.env.NODE_ENV === 'production')
-      {
+    get password(): string {
+      if (process.env.NODE_ENV === 'production') {
         throw new Error('Password is protected');
       }
 
@@ -239,21 +218,17 @@ export default (() =>
     * @param  {string} password
     * @return {void}
     */
-    set password(next: string = DEFAULT_PASSWORD): void
-    {
-      if (privateProps.get(this).data)
-      {
+    set password(next: string = DEFAULT_PASSWORD): void {
+      if (privateProps.get(this).data) {
         throw new Error('You cannot change Storage password when data exist.');
       }
 
       const password = (!next) ? '' : next;
 
-      if (checkPropTypes(password, PropTypes.string))
-      {
+      if (checkPropTypes(password, PropTypes.string)) {
         throw new Error('Type of Storage password not string.');
       }
-      else
-      {
+      else {
         privateProps.set(this, { ...privateProps.get(this), password });
       }
     }
@@ -262,10 +237,8 @@ export default (() =>
     * Get session lifetime in minutes. This data is protected in production mode.
     * @return {int}
     */
-    get sessionTime(): number
-    {
-      if (process.env.NODE_ENV === 'production')
-      {
+    get sessionTime(): number {
+      if (process.env.NODE_ENV === 'production') {
         throw new Error('SessionTime is protected');
       }
 
@@ -280,16 +253,13 @@ export default (() =>
     * User.sessionTime = 2 * 60;
     * // => data live 2 hours.
     */
-    set sessionTime(next: number): void
-    {
+    set sessionTime(next: number): void {
       let sessionTime;
 
-      if (checkPropTypes(next, PropTypes.number.isRequired))
-      {
+      if (checkPropTypes(next, PropTypes.number.isRequired)) {
         sessionTime = DEFAULT_SESSIONTIME * MIN_TO_MSEC;
       }
-      else
-      {
+      else {
         sessionTime = next * MIN_TO_MSEC;
       }
 
@@ -303,22 +273,17 @@ export default (() =>
      * Read and encrypt storage data from LocalStorage
      * @return {object} data
      */
-    _getLocalStorage()
-    {
+    _getLocalStorage() {
       let localStorage = store.get(this.key);
 
-      if (localStorage)
-      {
-        try
-        {
-          if (privateProps.get(this).password)
-          {
+      if (localStorage) {
+        try {
+          if (privateProps.get(this).password) {
             localStorage = decrypt(localStorage, privateProps.get(this).password);
           }
           return JSON.parse(localStorage);
         }
-        catch (e)
-        {
+        catch (e) {
           this.flush();
           return {};
         }
@@ -333,10 +298,8 @@ export default (() =>
     * @param  {string} timestamp
     * @return {boolean}
     */
-    _validate(timestamp: number): boolean
-    {
-      if (isNaN(timestamp))
-      {
+    _validate(timestamp: number): boolean {
+      if (isNaN(timestamp)) {
         return false;
       }
 
@@ -356,10 +319,8 @@ export default (() =>
      * User.add({ gender: 1 });
      * // => User.data => { name: 'John', gender: 1 }
      */
-    add(object: {}): {}
-    {
-      if (checkPropTypes(object, PropTypes.object.isRequired))
-      {
+    add(object: {}): {} {
+      if (checkPropTypes(object, PropTypes.object.isRequired)) {
         throw new Error('Type of Storage data not object when use add method.');
       }
 
@@ -377,13 +338,11 @@ export default (() =>
      * @param  {Array|<Any>} keys transform array
      * @return {Object} new data
      */
-    remove(keys: number|[]|string): {}
-    {
+    remove(keys: number | [] | string): {} {
       const arrayKeys = Array.isArray(keys) ? keys : [keys];
 
       this.data = arrayKeys.reduce(
-        (result, key) =>
-        {
+        (result, key) => {
           delete result[key];
 
           return result;
@@ -400,14 +359,11 @@ export default (() =>
     * @private
     * @return {void}
     */
-    refurbish(): void
-    {
-      if (isEmpty(this._getLocalStorage()))
-      {
+    refurbish(): void {
+      if (isEmpty(this._getLocalStorage())) {
         this.flush();
       }
-      else if (!isEmpty(this.data))
-      {
+      else if (!isEmpty(this.data)) {
         this.data = this.data;
       }
     }
@@ -416,8 +372,7 @@ export default (() =>
      * Keep immortal data
      * @todo possible to attach immortal data, these data never will erase.
      */
-    erase(): void
-    {
+    erase(): void {
       this.flush();
     }
 
@@ -425,8 +380,7 @@ export default (() =>
     * Terminate all data data, also localStorage
     * @return {void}
     */
-    flush(): void
-    {
+    flush(): void {
       privateProps.set(this, { ...privateProps.get(this), data: {} });
       store.remove(this.key);
     }

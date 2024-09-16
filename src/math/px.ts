@@ -11,8 +11,15 @@
  * remToPix(3);
  * // => 30
  */
-export const remToPix = (rem: number): number =>
-  rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+export const remToPix = (rem: number): number => {
+
+  if (typeof getComputedStyle === 'undefined' || typeof document === 'undefined')
+  {
+    return 0;
+  }
+
+  return rem * parseFloat(getComputedStyle(document.documentElement).fontSize);
+}
 
 // const emToPix = parentElement =>
 //   parseFloat(getComputedStyle(parentElement).fontSize);

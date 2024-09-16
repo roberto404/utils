@@ -52,19 +52,17 @@ const AVAILABLE_LISTENERS = [
 
 
 type shortcutType =
-{
-  keyCode: string,
-  handler: () => void,
-  description?: string,
-};
+  {
+    keyCode: string,
+    handler: () => void,
+    description?: string,
+  };
 
 
-export default (() =>
-{
+export default (() => {
   const privateProps = new WeakMap();
 
-  privateProps.add = (key, object) =>
-  {
+  privateProps.add = (key, object) => {
     privateProps.set(
       key,
       {
@@ -74,8 +72,7 @@ export default (() =>
     );
   };
 
-  const getMedia = () =>
-  {
+  const getMedia = () => {
     const node = document.createElement('DIV');
     node.setAttribute('id', 'respond-to');
 
@@ -94,12 +91,14 @@ export default (() =>
    * @type {Object} { lang, regionName, regionCode, baseDir, pathName, pageName, title }
    * @private
    */
-  const getDocumentConfig = () =>
-  {
+  const getDocumentConfig = () => {
+    if (typeof document === 'undefined') {
+      return {};
+    }
+
     let title = '';
 
-    if (document.getElementsByTagName('title')[0])
-    {
+    if (document.getElementsByTagName('title')[0]) {
       title = document.getElementsByTagName('title')[0].innerHTML;
     }
 
@@ -145,8 +144,7 @@ export default (() =>
      */
     let baseDir = '/';
 
-    if (document.getElementsByTagName('base')[0])
-    {
+    if (document.getElementsByTagName('base')[0]) {
       baseDir = document.getElementsByTagName('base')[0].getAttribute('href');
     }
 
@@ -157,13 +155,11 @@ export default (() =>
      */
     let pathName = location.pathname.replace(new RegExp(`^${baseDir}(.*)$`), '$1');
 
-    if (pathName[pathName.length - 1] === '/')
-    {
+    if (pathName[pathName.length - 1] === '/') {
       pathName = pathName.substr(0, [pathName.length - 1]);
     }
 
-    if (location.hash)
-    {
+    if (location.hash) {
       pathName += location.hash;
     }
 
@@ -235,8 +231,7 @@ export default (() =>
   * @class
   * @example
   */
-  class Application
-  {
+  class Application {
     register = {}
     listeners = []
     inactiveListeners = []
@@ -249,13 +244,12 @@ export default (() =>
     */
     constructor(
       // data: {},
-      settings?: {
+      settings: {
         store?: {},
         actions?: {},
         config?: {},
       } = {},
-    )
-    {
+    ) {
       if (
         checkPropTypes(
           settings,
@@ -265,13 +259,15 @@ export default (() =>
             config: ConfigType,
           }),
         )
-      )
-      {
+      ) {
         throw new Error('Application settings error.');
       }
 
       // Add useragent to html
-      window.document.documentElement.setAttribute('data-useragent', (window.navigator || {}).userAgent);
+      // if (typeof window !== 'undefined')
+      // {
+      //   window.document.documentElement.setAttribute('data-useragent', (window.navigator || {}).userAgent);
+      // }
 
       // Initial privateProps type
       privateProps.set(this, {});
@@ -285,15 +281,13 @@ export default (() =>
         document,
       };
 
-      this.locale = `${document.lang}-${document.regionCode.toUpperCase()}`;
+      this.locale = `${document.lang}-${document.regionCode?.toUpperCase()}`;
 
-      if (settings.actions)
-      {
+      if (settings.actions) {
         this.setActions(settings.actions);
       }
 
-      if (settings.store)
-      {
+      if (settings.store) {
         this.store = settings.store;
       }
 
@@ -308,7 +302,9 @@ export default (() =>
 
       this.vendors = [];
 
-      window.addEventListener('orientationchange', this.OrientationChangeListener);
+      if (typeof window !== 'undefined') {
+        window.addEventListener('orientationchange', this.OrientationChangeListener);
+      }
 
       this.dispatch();
     }
@@ -321,10 +317,8 @@ export default (() =>
     * Config is protected in production mode.
     * @return {Object}
     */
-    get config(): {}
-    {
-      if (process.env.NODE_ENV === 'production')
-      {
+    get config(): {} {
+      if (process.env.NODE_ENV === 'production') {
         throw new Error('Config is protected.');
       }
 
@@ -344,10 +338,8 @@ export default (() =>
     *
     * const Model = new Application({config: { name: 'John'}});
     */
-    set config(config: {}): void
-    {
-      if (privateProps.get(this).config)
-      {
+    set config(config: {}): void {
+      if (privateProps.get(this).config) {
         throw new Error('Config defined yet.');
       }
 
@@ -358,8 +350,7 @@ export default (() =>
      * Get name of page
      * @return {String} pageName
      */
-    getPageName(): string
-    {
+    getPageName(): string {
       return privateProps.get(this).config.document.pageName;
     }
 
@@ -367,13 +358,11 @@ export default (() =>
      * Return CSS media screen type
      * @return {string}        [desktop|mobile|tablet]
      */
-    getMedia(): string
-    {
+    getMedia(): string {
       return getMedia();
     }
 
-    static getOrientation(): string
-    {
+    static getOrientation(): string {
       return window.matchMedia('(orientation: portrait)').matches ? 'portrait' : 'landscape';
     }
 
@@ -381,8 +370,7 @@ export default (() =>
      * Return html Title content
      * @return {string}        title
      */
-    getPageTitle(): string
-    {
+    getPageTitle(): string {
       return privateProps.get(this).config.document.title;
     }
 
@@ -391,25 +379,20 @@ export default (() =>
      * @param {string} title
      * @todo modify privateProps value
      */
-    static setPageTitle(title: string)
-    {
+    static setPageTitle(title: string) {
       document.getElementsByTagName('title')[0].innerHTML = title;
     }
 
-    setDocumentTitle = (title) =>
-    {
+    setDocumentTitle = (title) => {
       Application.setPageTitle(title);
     }
 
-    setDocumentConfig = (props = {}) =>
-    {
-      Object.keys(props).forEach((propName) =>
-      {
+    setDocumentConfig = (props = {}) => {
+      Object.keys(props).forEach((propName) => {
         if (
           typeof this[`setDocument${capitalizeFirstLetter(propName)}`] === 'function'
           && ['title'].indexOf(propName) !== -1
-        )
-        {
+        ) {
           this[`setDocumentTitle`](props[propName]);
         }
       })
@@ -420,10 +403,8 @@ export default (() =>
      * @param  {string} [module] index of config.project
      * @return {object}        [description]
      */
-    getProjectConfig(module?: string): {}
-    {
-      if (!module)
-      {
+    getProjectConfig(module?: string): {} {
+      if (!module) {
         return privateProps.get(this).config.project;
       }
       return privateProps.get(this).config.project[module];
@@ -439,31 +420,29 @@ export default (() =>
      *
      * //=> merge two action array
      */
-    setActions(actions: {})
-    {
+    setActions(actions: {}) {
       if (
         checkPropTypes(
           actions,
           ActionsType.isRequired,
         )
-      )
-      {
+      ) {
         throw new Error('Invalid action type');
       }
 
       const currentActions = privateProps.get(this).actions || {};
 
-      privateProps.add(this, { actions: {
-        ...currentActions,
-        ...actions,
-      } });
+      privateProps.add(this, {
+        actions: {
+          ...currentActions,
+          ...actions,
+        }
+      });
     }
 
 
-    addListener = (event: string, handler: void, extra: {}) =>
-    {
-      if (AVAILABLE_LISTENERS.indexOf(event) === -1)
-      {
+    addListener = (event: string, handler: void, extra: {}) => {
+      if (AVAILABLE_LISTENERS.indexOf(event) === -1) {
         throw new Error(`${event} not available listeners (${AVAILABLE_LISTENERS.join(', ')})`);
       }
 
@@ -472,12 +451,10 @@ export default (() =>
       this.listeners.push({ event, handler, ...extra });
     }
 
-    removeListener = (handler: void): boolean =>
-    {
+    removeListener = (handler: void): boolean => {
       const index = this.listeners.findIndex(listenter => listenter.handler === handler);
 
-      if (index !== -1)
-      {
+      if (index !== -1) {
         const { event, handler } = this.listeners[index];  // eslint-disable-line no-shadow
 
         document.removeEventListener(event, handler);
@@ -489,22 +466,17 @@ export default (() =>
       return false;
     }
 
-    listenerTest  = (listener: {}, event: string, extra = {}): boolean =>
+    listenerTest = (listener: {}, event: string, extra = {}): boolean =>
       listener.event === event && Object.keys(extra).every(i => extra[i] === listener[i]);
 
-    inactivateListeners = (event: string, extra: {}) =>
-    {
-      this.listeners.forEach((listener) =>
-      {
-        if (this.listenerTest(listener, event, extra))
-        {
-          if (this.removeListener(listener.handler))
-          {
+    inactivateListeners = (event: string, extra: {}) => {
+      this.listeners.forEach((listener) => {
+        if (this.listenerTest(listener, event, extra)) {
+          if (this.removeListener(listener.handler)) {
             if (
               this.inactiveListeners.findIndex(inactiveListener =>
                 Object.keys(listener).every(key => inactiveListener[key] && inactiveListener[key].toString() === listener[key].toString())
-            ) === -1)
-            {
+              ) === -1) {
               this.inactiveListeners.push(listener);
             }
           }
@@ -512,12 +484,10 @@ export default (() =>
       });
     }
 
-    activateListeners = (event: string, extra: {}) =>
-    {
+    activateListeners = (event: string, extra: {}) => {
       const listeners = this.inactiveListeners.filter(listener => this.listenerTest(listener, event, extra));
 
-      listeners.forEach((listener) =>
-      {
+      listeners.forEach((listener) => {
         this.addListener(listener.event, listener.handler, listener.extra);
       });
 
@@ -528,10 +498,9 @@ export default (() =>
      * Compare the keyboard event and key
      * @param {string} keyCode shortcut: "CTRL+S", "CTRL+SHIFT+S"
      */
-    isShortcut(keyCode: string, event: KeyboardEvent) :boolean // eslint-disable-line
+    isShortcut(keyCode: string, event: KeyboardEvent): boolean // eslint-disable-line
     {
-      if (!event || typeof event.key === 'undefined')
-      {
+      if (!event || typeof event.key === 'undefined') {
         return false;
       }
 
@@ -563,10 +532,8 @@ export default (() =>
      ], 'collection');
 
      */
-    addShortcuts = (shortcuts: Array<shortcutType>, collection?: string): void =>
-    {
-      shortcuts.forEach((shortcut) =>
-      {
+    addShortcuts = (shortcuts: Array<shortcutType>, collection?: string): void => {
+      shortcuts.forEach((shortcut) => {
         this.addListener(
           'keydown',
           event => this.isShortcut(shortcut.keyCode, event) && shortcut.handler(event),
@@ -586,8 +553,7 @@ export default (() =>
      * removeShortcuts('collectionName');
      * removeShortcuts(['CTRL+S']);
      */
-    removeShortcuts = (shortcutsOrCollection: Array<string> | string): void =>
-    {
+    removeShortcuts = (shortcutsOrCollection: Array<string> | string): void => {
       /**
        * Affected shortcuts
        * @type {Array}
@@ -613,14 +579,12 @@ export default (() =>
     }
 
 
-    loadVendor(url, callback)
-    {
+    loadVendor(url, callback) {
       const regex = /\.(js|css)(\?.*)?$/;
 
       const matches = regex.exec(url);
 
-      if (matches === null)
-      {
+      if (matches === null) {
         return false;
       }
 
@@ -629,39 +593,30 @@ export default (() =>
 
       const vendor = this.vendors.find(vendor => vendor.url === url);
 
-      if (vendor)
-      {
-        if (typeof callback === 'function')
-        {
-          if (vendor.status)
-          {
+      if (vendor) {
+        if (typeof callback === 'function') {
+          if (vendor.status) {
             callback()
           }
-          else
-          {
+          else {
             vendor.callback.push(callback);
           }
         }
       }
-      else
-      {
+      else {
         this.vendors.push({
           url,
           extension,
           callback: [callback]
         });
 
-        const vendorListener = (event) =>
-        {
-          if (event.type === 'load')
-          {
+        const vendorListener = (event) => {
+          if (event.type === 'load') {
             const vendor = this.vendors.find(vendor => vendor.url === url);
 
             vendor.status === true;
-            vendor.callback.forEach((cb) =>
-            {
-              if (typeof cb === 'function')
-              {
+            vendor.callback.forEach((cb) => {
+              if (typeof cb === 'function') {
                 cb();
               }
             });
@@ -671,28 +626,27 @@ export default (() =>
 
         let element;
 
-        switch (extension)
-        {
+        switch (extension) {
           case 'js':
-          {
-            element = document.createElement('script');
+            {
+              element = document.createElement('script');
 
-            element.type = 'text/javascript';
-            element.async = false; // Load in order
-            element.src = url;
+              element.type = 'text/javascript';
+              element.async = false; // Load in order
+              element.src = url;
 
-            break;
-          }
+              break;
+            }
 
           case 'css':
-          {
-            element = document.createElement('link');
+            {
+              element = document.createElement('link');
 
-            element.href = url;
-            element.rel = 'stylesheet';
+              element.href = url;
+              element.rel = 'stylesheet';
 
-            break;
-          }
+              break;
+            }
         }
 
         element.onreadystatechange = vendorListener;
@@ -707,10 +661,8 @@ export default (() =>
 
     /* !- Listeners */
 
-    OrientationChangeListener = () =>
-    {
-      if (this.listeners.orientation)
-      {
+    OrientationChangeListener = () => {
+      if (this.listeners.orientation) {
         this.listeners.orientation.forEach(listener => listener(this.getOrientation()));
       }
     }
@@ -722,8 +674,7 @@ export default (() =>
      * If action match with pageName, pushed method execute.
      * @return {void}
      */
-    dispatch(): void
-    {
+    dispatch(): void {
       this._getActions().map(method => method(this));
     }
 
@@ -735,16 +686,13 @@ export default (() =>
      * @private
      * @return {Array}         matched actions
      */
-    _getActions(): []
-    {
+    _getActions(): [] {
       const pageName = this.getPageName();
 
       return reduce(
         privateProps.get(this).actions || {},
-        (results, actions, pattern) =>
-        {
-          if (pageName.match(new RegExp(pattern)))
-          {
+        (results, actions, pattern) => {
+          if (pageName.match(new RegExp(pattern))) {
             return [...results, ...actions];
           }
           return results;

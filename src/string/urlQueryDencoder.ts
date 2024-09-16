@@ -10,7 +10,7 @@
  *
  * urlQueryDencoder(urlQueryEncoder('abc$#Á'));
  */
-const urlQueryDencoder = (string: string): string  =>
+const urlQueryDencoder = (string: string = ''): string =>
   string.replace(/_([0-9]+)_/g, (match, code) => String.fromCharCode(code));
 
 export default urlQueryDencoder;

@@ -95,8 +95,7 @@ export const PROPTYPE_SETTINGS = PropTypes.shape({
  *
  * new Data(data, settings);
  */
-class Data
-{
+class Data {
   _data: dataType;
   _results: dataType = [];
   _order: orderType;
@@ -113,23 +112,20 @@ class Data
    */
   constructor(
     data: dataType,
-    settings?: {
+    settings: {
       order?: orderType,
       filters?: Array<filterType>,
       paginate?: paginateType,
       sortMethod?: sortMethodType,
     } = {},
-  )
-  {
+  ) {
     const errors = [
       ...(checkPropTypes(data, PROPTYPES.data, 'data') || []),
       ...(checkPropTypes(settings, PROPTYPE_SETTINGS, 'settings') || []),
     ];
 
-    if (errors.length)
-    {
-      if (process.env.NODE_ENV !== 'production')
-      {
+    if (errors.length) {
+      if (process.env.NODE_ENV !== 'production') {
         console.warn(`Data model inital error. ${errors.map(e => e.message).join(' ')}`); // eslint-disable-line no-console
       }
       return false;
@@ -140,22 +136,22 @@ class Data
     this._results = this._data.concat([]);
 
     this._order = settings.order ||
-      {
-        column: '',
-        direction: 'asc', // asc || desc
-      };
+    {
+      column: '',
+      direction: 'asc', // asc || desc
+    };
 
     this._filters = settings.filters || [];
 
     this._paginate = settings.paginate ||
-      {
-        page: 1,
-        limit: 20,
-        totalPage: 0,
-        results: null,
-        nextPage: null,
-        prevPage: null,
-      };
+    {
+      page: 1,
+      limit: 20,
+      totalPage: 0,
+      results: null,
+      nextPage: null,
+      prevPage: null,
+    };
 
     this.handle();
   }
@@ -166,17 +162,14 @@ class Data
    * Raw data.
    * @type {array}
    */
-  get data(): dataType
-  {
+  get data(): dataType {
     return this._data;
   }
 
-  set data(data: dataType)
-  {
+  set data(data: dataType) {
     const errors = checkPropTypes(data, PROPTYPES.data, 'data') || [];
 
-    if (errors.length)
-    {
+    if (errors.length) {
       throw new UserError(
         'Invalid data',
         {
@@ -194,13 +187,11 @@ class Data
    * Handled data results.
    * @type {array}
    */
-  get results(): dataType
-  {
+  get results(): dataType {
     return this._results;
   }
 
-  set results(results: dataType)
-  {
+  set results(results: dataType) {
     this._results = results;
   }
 
@@ -214,44 +205,36 @@ class Data
    * data.order = {column: 'name', direction: 'asc'};
    * // => data.results
    */
-  get order(): orderType
-  {
+  get order(): orderType {
     return this._order;
   }
 
-  set order(settings: orderType)
-  {
-    if (isEmpty(settings))
-    {
+  set order(settings: orderType) {
+    if (isEmpty(settings)) {
       return;
     }
 
     const order = { ...this._order };
 
-    if (['string', 'function'].indexOf(typeof settings.column) !== -1)
-    {
+    if (['string', 'function'].indexOf(typeof settings.column) !== -1) {
       order.column = settings.column;
     }
 
-    if (!settings.direction && settings.column === order.column)
-    {
+    if (!settings.direction && settings.column === order.column) {
       order.direction = DIRECTIONS[+!DIRECTIONS.indexOf(order.direction)];
     }
     else if (
       settings.direction !== this.order.direction
       && DIRECTIONS.indexOf(settings.direction) !== -1
-    )
-    {
+    ) {
       order.direction = settings.direction;
     }
 
-    if (!order.direction)
-    {
+    if (!order.direction) {
       order.direction = DIRECTIONS[0];
     }
 
-    if (!isEqual(order, this.order))
-    {
+    if (!isEqual(order, this.order)) {
       this._order = order;
       this.handle();
     }
@@ -278,13 +261,11 @@ class Data
    *
    * // => data.results
    */
-  get filters(): filterType[]
-  {
+  get filters(): filterType[] {
     return this._filters;
   }
 
-  set filters(newFilters: filterType[] | filterType)
-  {
+  set filters(newFilters: filterType[] | filterType) {
     // object to array
     const filters = (Array.isArray(newFilters)) ?
       newFilters.map(filter => ({ ...filter })) : [{ ...newFilters }];
@@ -292,29 +273,23 @@ class Data
     let modified = false;
 
     // register, update or inactive observed filter
-    filters.forEach((filter) =>
-    {
+    filters.forEach((filter) => {
       const filterIndex = this.filters.findIndex(f => f.id === filter.id);
 
-      if (filterIndex === -1)
-      {
+      if (filterIndex === -1) {
         modified = this._registerNewFilter(filter);
       }
-      else if (!filter.arguments || isEmpty(filter.arguments))
-      {
-        if (this._inactiveFilterByIndex(filterIndex))
-        {
+      else if (!filter.arguments || isEmpty(filter.arguments)) {
+        if (this._inactiveFilterByIndex(filterIndex)) {
           modified = true;
         }
       }
-      else if (this._updateFilterByIndex(filterIndex, filter))
-      {
+      else if (this._updateFilterByIndex(filterIndex, filter)) {
         modified = true;
       }
     });
 
-    if (modified)
-    {
+    if (modified) {
       this.handle();
     }
   }
@@ -333,15 +308,12 @@ class Data
    *
    * // => data.paginate.results
    */
-  get paginate(): paginateType
-  {
+  get paginate(): paginateType {
     return this._paginate;
   }
 
-  set paginate(options: paginateType)
-  {
-    if (!isEmpty(options))
-    {
+  set paginate(options: paginateType) {
+    if (!isEmpty(options)) {
       this._paginate = this._pagination(options);
     }
   }
@@ -354,10 +326,8 @@ class Data
    * @private
    * @return {void}
    */
-  _pagination(options: paginateType): paginateType
-  {
-    if (typeof options !== 'object')
-    {
+  _pagination(options: paginateType): paginateType {
+    if (typeof options !== 'object') {
       return this._paginate;
     }
 
@@ -366,22 +336,19 @@ class Data
       ...options,
     };
 
-    if (typeof options.limit !== 'number')
-    {
+    if (typeof options.limit !== 'number') {
       paginate.limit = this._paginate.limit;
     }
 
     paginate.total = this._results.length;
 
-    if (paginate.limit === 0)
-    {
+    if (paginate.limit === 0) {
       paginate.limit = paginate.total;
     }
 
     paginate.totalPage = Math.ceil(paginate.total / paginate.limit);
 
-    if (typeof options.page === 'number')
-    {
+    if (typeof options.page === 'number') {
       paginate.page = Math.ceil(options.page);
     }
 
@@ -396,8 +363,7 @@ class Data
     paginate.prevPage = (paginate.page > 1)
       ? paginate.page - 1 : null;
 
-    if (options.limit === 0)
-    {
+    if (options.limit === 0) {
       paginate.limit = 0;
     }
 
@@ -413,21 +379,15 @@ class Data
    * @private
    * @return {void}
    */
-  _sort = () =>
-  {
-    if (this.order.column)
-    {
-      if (typeof this.order.column === 'function')
-      {
+  _sort = () => {
+    if (this.order.column) {
+      if (typeof this.order.column === 'function') {
         this._results = sort(this._results, this.order.column);
       }
-      else
-      {
+      else {
         // find not empty observed record
-        this._results.some((record) =>
-        {
-          if (!record[this.order.column])
-          {
+        this._results.some((record) => {
+          if (!record[this.order.column]) {
             return false;
           }
 
@@ -435,17 +395,14 @@ class Data
 
 
           // number in string format
-          if (!isNaN(field))
-          {
-            this._results = sort(this._results, (a, b) =>
-            {
+          if (!isNaN(field)) {
+            this._results = sort(this._results, (a, b) => {
               /**
                * deviant situaction: First record seem like a number
                * @example
                * [{ title: '1' }, { title: 'abc' }...]
                */
-              if (isNaN(a[this.order.column]) || isNaN(b[this.order.column]))
-              {
+              if (isNaN(a[this.order.column]) || isNaN(b[this.order.column])) {
                 return String(a[this.order.column])
                   .toLowerCase()
                   .localeCompare(String(b[this.order.column]).toLowerCase()) === 1;
@@ -455,10 +412,8 @@ class Data
             });
           }
           // special numberic field (like currency)
-          else if (typeof field === 'string' && NOT_NAN_REGEX.test(field))
-          {
-            this._results = sort(this._results, (left, right) =>
-            {
+          else if (typeof field === 'string' && NOT_NAN_REGEX.test(field)) {
+            this._results = sort(this._results, (left, right) => {
               let a = left[this.order.column] || '';
               let b = right[this.order.column] || '';
 
@@ -466,13 +421,11 @@ class Data
               const aLikeNum = typeof a === 'string' && NOT_NAN_REGEX.test(a);
               const bLikeNum = typeof b === 'string' && NOT_NAN_REGEX.test(b);
 
-              if (aLikeNum && (typeof b === 'number' || bLikeNum))
-              {
+              if (aLikeNum && (typeof b === 'number' || bLikeNum)) {
                 a = toNumber(a);
               }
 
-              if (bLikeNum && typeof a === 'number')
-              {
+              if (bLikeNum && typeof a === 'number') {
                 b = toNumber(b);
               }
 
@@ -480,8 +433,7 @@ class Data
             });
           }
           // string compare
-          else
-          {
+          else {
             this._results = sort(this._results, (a, b) =>
               (a[this.order.column] || '')
                 .toLowerCase()
@@ -494,8 +446,7 @@ class Data
       }
     }
 
-    if (this.order.direction !== 'asc')
-    {
+    if (this.order.direction !== 'asc') {
       this._results.reverse();
     }
   }
@@ -506,8 +457,7 @@ class Data
    * @private
    * @return {void}
    */
-  _filter()
-  {
+  _filter() {
     // all filter argument
     const args = {};
     this._filters.forEach(filter => args[filter.id] = filter.arguments); // eslint-disable-line
@@ -528,15 +478,13 @@ class Data
    * @param  {object} filter
    * @return {boolean} successfull of registration
    */
-  _registerNewFilter(filter: filterType): boolean
-  {
+  _registerNewFilter(filter: filterType): boolean {
     const result = checkPropTypes(
       filter,
       PROPTYPE_FILTER,
     );
 
-    if (result)
-    {
+    if (result) {
       return false;
     }
 
@@ -551,10 +499,8 @@ class Data
    * @param  {int} index
    * @return {bool} true
    */
-  _inactiveFilterByIndex(index: number): boolean
-  {
-    if (!this._filters[index])
-    {
+  _inactiveFilterByIndex(index: number): boolean {
+    if (!this._filters[index]) {
       return false;
     }
 
@@ -570,10 +516,8 @@ class Data
    * @param  {object} filter new filter properties
    * @return {boolean} successfull of update process
    */
-  _updateFilterByIndex(index: number, filter: filterType): boolean
-  {
-    if (Object.keys(filter).some(key => this._filters[index][key] !== filter[key]))
-    {
+  _updateFilterByIndex(index: number, filter: filterType): boolean {
+    if (Object.keys(filter).some(key => this._filters[index][key] !== filter[key])) {
       this._filters[index] = {
         ...this._filters[index],
         ...filter,
@@ -607,12 +551,10 @@ class Data
   *
   * @return {void}
   */
-  handle(): void
-  {
+  handle(): void {
     this._results = this._data.concat([]);
 
-    if (!isEmpty(this.filters))
-    {
+    if (!isEmpty(this.filters)) {
       this._filter();
     }
 
@@ -622,8 +564,7 @@ class Data
     this._paginate = this._pagination(this._paginate);
   }
 
-  getSettings()
-  {
+  getSettings() {
     return ({
       // filters: this._filters, // => todo _filter() paginationt 1-re allitja.
       order: this._order,
@@ -641,10 +582,8 @@ class Data
    * @param  {int} index
    * @return {object}
    */
-  getDataByIndex(index: number): {} | boolean
-  {
-    if (typeof this._data[index] === 'undefined')
-    {
+  getDataByIndex(index: number): {} | boolean {
+    if (typeof this._data[index] === 'undefined') {
       return false;
     }
 
@@ -657,10 +596,8 @@ class Data
    * @param  {int} index
    * @return {object}
    */
-  getResultByIndex(index: number): {} | boolean
-  {
-    if (typeof this.results[index] === 'undefined')
-    {
+  getResultByIndex(index: number): {} | boolean {
+    if (typeof this.results[index] === 'undefined') {
       return false;
     }
 
@@ -672,19 +609,16 @@ class Data
    * @type {string} field
    * @since 3.7.0
    */
-  collectResultsByField(field: string | []): []
-  {
+  collectResultsByField(field: string | []): [] {
     const respond = {};
     const fields = Array.isArray(field) ? field : [field];
 
-    this.results.forEach((result) =>
-    {
+    this.results.forEach((result) => {
       const valueOfFields = fields.map(currentField => `#${result[currentField]}`.replaceAll('.', '\u2024'));
 
       const pointer = valueOfFields.join('.');
 
-      if (!has(respond, pointer))
-      {
+      if (!has(respond, pointer)) {
         set(respond, pointer, []);
       }
 
@@ -702,16 +636,14 @@ class Data
     field: string,
     labelIteratee?: (groupRecords: dataType, groupField: string) => string,
     valueIteratee?: (groupRecords: dataType, groupField: string) => number
-  )
-  {
+  ) {
     return collectionGroupBy(this.results, field, labelIteratee, valueIteratee);
   }
 
   /**
    * Calculate a PivotTable about the data filtered _results
    */
-  getPivotTable(propColumn: string|Function, propMethod?: Function, group?: string)
-  {
+  getPivotTable(propColumn: string | Function, propMethod?: Function, group?: string) {
     return pivotTable(this.results, propColumn, propMethod, group);
   }
 
@@ -743,35 +675,28 @@ class Data
    *     { id: [3], A: 2, B: 'bar' },
    *   ];
    */
-  compact(field:string = 'id')
-  {
+  compact(field: string = 'id') {
     const compactResults = [];
 
     // iterate all model result records
-    this.results.forEach((modelRecord) =>
-    {
-      const matched = compactResults.some((compactRecord, index) =>
-      {
-        const deepEqual = Object.keys(compactRecord).every((key) =>
-        {
-          if (key === field)
-          {
+    this.results.forEach((modelRecord) => {
+      const matched = compactResults.some((compactRecord, index) => {
+        const deepEqual = Object.keys(compactRecord).every((key) => {
+          if (key === field) {
             return true;
           }
 
           return modelRecord[key] === compactRecord[key];
         });
 
-        if (deepEqual)
-        {
+        if (deepEqual) {
           compactResults[index][field].push(modelRecord[field]);
         }
 
         return deepEqual;
       });
 
-      if (!matched)
-      {
+      if (!matched) {
         compactResults.push({
           ...modelRecord,
           [field]: [modelRecord[field]],

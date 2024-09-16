@@ -8,8 +8,13 @@ type Path = {
   query: string,
 }
 
-const getPath = (path = window.location.pathname): Path =>
+const getPath = (path = ''): Path =>
 {
+  if (!path && typeof window !== 'undefined')
+  {
+    path = window.location.pathname;
+  }
+
   const slashIndexOf = path.lastIndexOf('/');
 
   const folders = path.substring(0, slashIndexOf);
