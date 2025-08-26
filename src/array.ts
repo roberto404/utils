@@ -13,6 +13,13 @@ import pivotTable from './array/pivotTable';
 import getCollectionProp from './array/getCollectionProp';
 import shiftSelect from './array/shiftSelect';
 import uniqSort from './array/uniqSort';
+import mode from './array/mode';
+import median from './array/median';
+import variance from './array/variance';
+import stdDev from './array/stdDev';
+import iqr from './array/iqr';
+import quartiles from './array/quartiles';
+import detectArrayType from './array/detectArrayType';
 
 
 export {
@@ -26,6 +33,13 @@ export {
   pivotTable,
   getCollectionProp,
   shiftSelect,
+  mode,
+  median,
+  variance,
+  stdDev,
+  iqr,
+  quartiles,
+  detectArrayType,
 };
 
 export default {
@@ -38,4 +52,11 @@ export default {
   produceNumericArray,
   pivotTable,
   getCollectionProp,
+  mode,
+  median,
+  variance,
+  stdDev,
+  iqr,
+  quartiles,
+  detectArrayType,
 };
