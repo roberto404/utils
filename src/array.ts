@@ -3,6 +3,8 @@
  * @namespace array
  */
 
+import sum from './array/sum';
+import avg from './array/avg';
 import count from './array/count';
 import countUnique from './array/countUnique';
 import unique from './array/unique';
@@ -23,6 +25,8 @@ import detectArrayType from './array/detectArrayType';
 
 
 export {
+  sum,
+  avg,
   count,
   countUnique,
   unique,
@@ -43,6 +47,8 @@ export {
 };
 
 export default {
+  sum,
+  avg,
   count,
   countUnique,
   unique,
