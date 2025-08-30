@@ -38,7 +38,7 @@ const detectArrayType = (
   let numeric = 0, date = 0, categorical = 0;
 
   for (const item of array) {
-    if (typeof item === 'number' && !isNaN(item)) {
+    if (!isNaN(parseFloat(item)) && isFinite(item)) {
       numeric++;
     } else if (
       item instanceof Date ||

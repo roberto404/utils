@@ -1,3 +1,5 @@
+import toNumber from '../string/toNumber';
+
 /**
  * Function returns the mode (most frequently occurring value) of an array of numbers.
  *
@@ -17,12 +19,17 @@
  * // => [1, 2]
  */
 const mode = (array: Array<number>): Array<number> => {
+
   if (!array.length) return [];
+
+    const nums = array.map(toNumber).filter(n => !Number.isNaN(n));
+
+  if (nums.length === 0) return null;
 
   const frequency: Record<number, number> = {};
   let maxFreq = 0;
 
-  for (const num of array) {
+  for (const num of nums) {
     frequency[num] = (frequency[num] || 0) + 1;
     if (frequency[num] > maxFreq) {
       maxFreq = frequency[num];

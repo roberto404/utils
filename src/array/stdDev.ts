@@ -1,3 +1,5 @@
+import toNumber from '../string/toNumber';
+
 /**
  * Function returns the standard deviation of an array of numbers.
  * Standard deviation is the square root of variance, showing dispersion in original units.
@@ -13,11 +15,17 @@
  * // => 2
  */
 const stdDev = (array: Array<number>): number | null => {
+
   if (!array.length) return null;
 
-  const mean = array.reduce((sum, num) => sum + num, 0) / array.length;
-  const squaredDiffs = array.map(num => Math.pow(num - mean, 2));
-  const variance = squaredDiffs.reduce((sum, val) => sum + val, 0) / array.length;
+  const nums = array.map(toNumber).filter(n => !Number.isNaN(n));
+
+  if (nums.length === 0) return null;
+
+  const mean = nums.reduce((sum, num) => sum + num, 0) / nums.length;
+  const squaredDiffs = nums.map(num => Math.pow(num - mean, 2));
+  const variance = squaredDiffs.reduce((sum, val) => sum + val, 0) / nums.length;
+
   return Math.sqrt(variance);
 };
 

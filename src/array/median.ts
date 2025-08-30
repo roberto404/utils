@@ -1,3 +1,5 @@
+import toNumber from '../string/toNumber';
+
 /**
  * Function returns the median (middle value) of an array of numbers.
  *
@@ -20,7 +22,11 @@ const median = (array: Array<number>): number | null => {
   
   if (!array.length) return null;
 
-  const sorted = [...array].sort((a, b) => a - b);
+  const nums = array.map(toNumber).filter(n => !Number.isNaN(n));
+
+  if (nums.length === 0) return null;
+
+  const sorted = [...nums].sort((a, b) => a - b);
   const mid = Math.floor(sorted.length / 2);
 
   return sorted.length % 2 === 0

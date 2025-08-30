@@ -1,3 +1,6 @@
+import toNumber from '../string/toNumber';
+
+
 /**
  * Function returns the quartiles (Q1, Q2, Q3) of an array of numbers.
  *
@@ -17,9 +20,14 @@
  * // => { Q1: 2.25, Q2: 4.5, Q3: 6.75 }
  */
 const quartiles = (array: Array<number>): { Q1: number; Q2: number; Q3: number } | null => {
+
   if (!array.length) return null;
 
-  const sorted = [...array].sort((a, b) => a - b);
+  const nums = array.map(toNumber).filter(n => !Number.isNaN(n));
+
+  if (nums.length === 0) return null;
+
+  const sorted = [...nums].sort((a, b) => a - b);
 
   const percentile = (p: number): number => {
     const pos = (sorted.length - 1) * p;
