@@ -300,6 +300,10 @@ export default (() => {
         },
       );
 
+      if (!this.register.data.createdDateTime) {
+        this.register.add({ createdDateTime: new Date().getTime() });
+      }
+
       this.vendors = [];
 
       if (typeof window !== 'undefined') {
