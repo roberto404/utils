@@ -79,6 +79,7 @@ export default (() => {
     constructor(
       data: {},
       settings: {
+        uuid?: string,
         key?: string,
         password?: string,
         sessionTime?: number,
@@ -93,6 +94,10 @@ export default (() => {
       this.key = settings.key;
       this.password = settings.password;
       this.sessionTime = settings.sessionTime;
+
+      if (settings.uuid && !store.get(`${this.key}@uuid`)) {
+        store.set(`${this.key}@uuid`, settings.uuid);
+      }
 
       if (data) {
         this.data = data;
@@ -231,6 +236,10 @@ export default (() => {
       else {
         privateProps.set(this, { ...privateProps.get(this), password });
       }
+    }
+
+    get uuid(): string {
+      return store.get(`${this.key}@uuid`);
     }
 
     /**
