@@ -101,7 +101,6 @@ class Data {
   _order: orderType;
   _filters: filterType[];
   _paginate: paginateType;
-  sortMethod: sortMethodType;
 
 
   /**
@@ -116,7 +115,6 @@ class Data {
       order?: orderType,
       filters?: Array<filterType>,
       paginate?: paginateType,
-      sortMethod?: sortMethodType,
     } = {},
   ) {
     const errors = [
