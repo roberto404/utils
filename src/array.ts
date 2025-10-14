@@ -22,7 +22,6 @@ import stdDev from './array/stdDev';
 import iqr from './array/iqr';
 import quartiles from './array/quartiles';
 import detectArrayType from './array/detectArrayType';
-import replaceAt from './array/replaceAt';
 
 
 export {
@@ -45,7 +44,6 @@ export {
   iqr,
   quartiles,
   detectArrayType,
-  replaceAt,
 };
 
 export default {
@@ -67,5 +65,4 @@ export default {
   iqr,
   quartiles,
   detectArrayType,
-  replaceAt,
 };
