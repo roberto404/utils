@@ -1,10 +1,8 @@
 import forEach from 'lodash/forEach';
 
 
-export const stringify = (value) =>
-{
-  switch (typeof value)
-  {
+export const stringify = (value) => {
+  switch (typeof value) {
     case 'string':
       return value;
 
@@ -24,12 +22,10 @@ export const stringify = (value) =>
  * @param  {Object} payload { id: 1, flag: [1, 2] }
  * @return {Object}         { id: "1", flag: "[1,2]" }
  */
-export const objectStringify = (payload) =>
-{
+export const objectStringify = (payload) => {
   const results = {};
 
-  forEach(payload, (value, index) =>
-  {
+  forEach(payload, (value, index) => {
     results[index] = stringify(value);
   });
 
