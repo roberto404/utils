@@ -25,12 +25,11 @@ export const SUMMARY_METHOD_NAME = 'summary';
 export const collectionGroupBy = (
   data: Array<{}>,
   prop: string,
-  labelIteratee?: (groupRecords: Array<{}>, groupProp: string) => string
+  labelIteratee?: (groupRecords: Array<{}>, groupProp?: string) => string
     = (groupRecords, groupProp) => groupProp,
-  valueIteratee?: (groupRecords: Array<{}>, groupProp: string) => number
+  valueIteratee?: (groupRecords: Array<{}>, groupProp?: string) => number
     = groupRecords => groupRecords.length,
-): Array<{ id: string, title: number }> =>
-{
+): Array<{ id: string, title: number }> => {
   return map(
     groupBy(data, x => typeof prop === 'function' ? prop(x) : x[prop]),
     (groupRecords, groupProp) =>
@@ -78,41 +77,34 @@ export const collectionGroupBy = (
  * // => { id: 6.5, name: NaN, gender: 1.3333333333333333, age: 26.5, visits: NaN }
  *
  */
-const pivotTable = function (data: Array<{}>, prop?: string|Function, method?: Function, group?: string|Array<string>)
-{
-  if (typeof prop === 'undefined' || Array.isArray(data) === false)
-  {
+const pivotTable = function (data: Array<{}>, prop?: string | Function, method?: Function, group?: string | Array<string>) {
+  if (typeof prop === 'undefined' || Array.isArray(data) === false) {
     return null;
   }
 
   let result;
 
-  if (typeof prop === 'string' && typeof method === 'function')
-  {
+  if (typeof prop === 'string' && typeof method === 'function') {
     let results = [];
 
-    if (group)
-    {
+    if (group) {
       const groups = Array.isArray(group) ? group : [group];
       let groupsIndex = 0;
 
-      const groupDataIterator = (groupData) =>
-      {
+      const groupDataIterator = (groupData) => {
         groupsIndex++;
 
         const groupResult = method(getCollectionProp(groupData, prop));
 
         let child;
 
-        if (groupsIndex < groups.length)
-        {
+        if (groupsIndex < groups.length) {
           child = collectionGroupBy(groupData, groups[groupsIndex], undefined, groupDataIterator);
         }
 
         groupsIndex--;
 
-        if (child)
-        {
+        if (child) {
           child.push({
             id: SUMMARY_METHOD_NAME,
             title: groupResult,
@@ -151,8 +143,7 @@ const pivotTable = function (data: Array<{}>, prop?: string|Function, method?: F
 
     result = (results.length === 1) ? results[0].title : results;
   }
-  else if (typeof prop === 'function')
-  {
+  else if (typeof prop === 'function') {
     const method = prop;
     const columns = Object.keys(data[0]);
 
@@ -165,13 +156,12 @@ const pivotTable = function (data: Array<{}>, prop?: string|Function, method?: F
     );
   }
 
-  if (this instanceof pivotTable)
-  {
+  if (this instanceof pivotTable) {
     this.result = result;
     return;
   }
 
-   return result;
+  return result;
 }
 
 pivotTable.prototype =
@@ -182,23 +172,18 @@ pivotTable.prototype =
    * { id: '2017-07-23', title: [ { id: 'male', title: 8 }, { id: 'female', title: 4 }, { id: 'count', title: 12 } ] }
    * // => [{ id, male, femail, count }, ... ]
    */
-  toArray: function(transform)
-  {
-    if (!this.result)
-    {
+  toArray: function (transform) {
+    if (!this.result) {
       return [];
     }
 
-    return this.result.map(({ id, title }) =>
-    {
-      const record = {id};
+    return this.result.map(({ id, title }) => {
+      const record = { id };
 
-      if (Array.isArray(title))
-      {
+      if (Array.isArray(title)) {
         title.forEach(child => record[child.id] = child.title);
       }
-      else
-      {
+      else {
         record[id] = title;
       }
 
@@ -214,29 +199,23 @@ pivotTable.prototype =
    * [{ 0: title#0, 1: title#1, children: [title#0, title#1...]}]
    * 
    */
-  toTable: function()
-  {
+  toTable: function () {
     let pivot = this.result || [];
     let options = {}
     let level = 0;
 
-    Object.keys(arguments).forEach(i =>
-    {
+    Object.keys(arguments).forEach(i => {
       const arg = arguments[i];
 
-      if (typeof arg === 'object')
-      {
-        if (Array.isArray(arg))
-        {
+      if (typeof arg === 'object') {
+        if (Array.isArray(arg)) {
           pivot = arg;
         }
-        else
-        {
+        else {
           options = arg;
         }
       }
-      else
-      {
+      else {
         level = arg;
       }
     })
@@ -244,30 +223,24 @@ pivotTable.prototype =
     /**
      * create array column values => options.cols
      */
-    if (options.cols && Array.isArray(options.cols[level]))
-    {
+    if (options.cols && Array.isArray(options.cols[level])) {
       return options.cols[level]
-        .map(colId =>
-        {
+        .map(colId => {
           const value = (pivot.find(({ id }) => id == colId) || {}).title;
 
-          if (Array.isArray(value))
-          {
+          if (Array.isArray(value)) {
             return this.toTable(value, options, level + 1);
           }
 
           return value || '-';
         });
     }
-    
-    return pivot.map(record =>
-    {
-      if (Array.isArray(record.title))
-      {
+
+    return pivot.map(record => {
+      if (Array.isArray(record.title)) {
         const children = this.toTable(record.title, options, level + 1);
 
-        if (options.cols && Array.isArray(options.cols[level + 1]))
-        {
+        if (options.cols && Array.isArray(options.cols[level + 1])) {
           return [record.id, ...children];
         }
         (children.length - 2)
@@ -279,7 +252,7 @@ pivotTable.prototype =
           children: children.slice(0, -1),
         }
       }
-      
+
       return [record.id, record.title];
     })
   },
@@ -304,29 +277,24 @@ pivotTable.prototype =
    * @param {String} summary 
    * @returns 
    */
-  toData: function(fields, summary = SUMMARY_METHOD_NAME)
-  {
+  toData: function (fields, summary = SUMMARY_METHOD_NAME) {
     const resultReducer = (result, level = 0) =>
       result.reduce(
-        (result, record) =>
-        {
-          if (record.id === SUMMARY_METHOD_NAME)
-          {
+        (result, record) => {
+          if (record.id === SUMMARY_METHOD_NAME) {
             return result;
           }
 
           const field = Array.isArray(fields) && fields[level] !== undefined ? fields[level] : level.toString();
 
-          if (Array.isArray(record.title))
-          {
+          if (Array.isArray(record.title)) {
             /**
              * [2: 1, summary: 1], [2: 2, summary: 2]
              */
             result.push(...resultReducer(record.title, level + 1).map(item => ({ ...item, [field]: record.id })))
           }
-          else
-          {
-            result.push({ [field]:record.id, [summary]: record.title});
+          else {
+            result.push({ [field]: record.id, [summary]: record.title });
           }
 
           return result;
