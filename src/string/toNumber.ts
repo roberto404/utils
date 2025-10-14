@@ -17,7 +17,7 @@ export const NOT_NAN_REGEX = /^-?[1-9]{1}[0-9]{0,2}[ ]*([0-9]{3}[ ]*)*(,[0-9]+)?
  * toNumber('1 300');
  * // => 1300
  */
-const toNumber = (string: string): number =>
+const toNumber = (string: string | number): number =>
 {
   if (typeof string === 'number')
   {
