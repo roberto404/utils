@@ -7,6 +7,8 @@ import getCollectionProp from './getCollectionProp';
 export const SUMMARY_METHOD_NAME = 'summary';
 
 
+
+
 /**
 * It returns grouped results
 * @param  {string} prop    grouping result by this object key
@@ -22,23 +24,63 @@ export const SUMMARY_METHOD_NAME = 'summary';
 * // => {'2016-02-03': 22, '2016-02-04': 25 }
 * collectionGroupBy(data, 'date', (value, key) => (sum(map(value, i => parseInt(i.person)))))
 */
-export const collectionGroupBy = (
-  data: Array<{}>,
-  prop: string,
-  labelIteratee?: (groupRecords: Array<{}>, groupProp?: string) => string
-    = (groupRecords, groupProp) => groupProp,
-  valueIteratee?: (groupRecords: Array<{}>, groupProp?: string) => number
-    = groupRecords => groupRecords.length,
-): Array<{ id: string, title: number }> => {
+// 1️⃣ Overload #1 – default
+export function collectionGroupBy<
+  TRecord extends Record<string, any>,
+  TKey extends keyof TRecord
+>(
+  data: TRecord[],
+  prop: TKey,
+): Array<{ id: string; title: number }>;
+
+// 2️⃣ Overload #2 – custom valueIteratee
+export function collectionGroupBy<
+  TRecord extends Record<string, any>,
+  TKey extends keyof TRecord,
+  TValue
+>(
+  data: TRecord[],
+  prop: TKey,
+  labelIteratee: (
+    records: TRecord[],
+    key: TRecord[TKey]
+  ) => string,
+  valueIteratee: (
+    records: TRecord[],
+    key: TRecord[TKey]
+  ) => TValue
+): Array<{ id: string; title: TValue }>;
+
+// 3️⃣ Function
+export function collectionGroupBy<
+  TRecord extends Record<string, any>,
+  TKey extends keyof TRecord,
+  TValue
+>(
+  data: TRecord[],
+  prop: TKey,
+  labelIteratee?: (
+    records: TRecord[],
+    key: TRecord[TKey]
+  ) => string,
+  valueIteratee?: (
+    records: TRecord[],
+    key: TRecord[TKey]
+  ) => TValue
+) {
+  const label = labelIteratee ?? ((_r, k) => String(k));
+  const value = valueIteratee ?? ((r: TRecord[]) => r.length);
+
   return map(
-    groupBy(data, x => typeof prop === 'function' ? prop(x) : x[prop]),
-    (groupRecords, groupProp) =>
-    ({
-      id: labelIteratee(groupRecords, groupProp),
-      title: valueIteratee(groupRecords, groupProp),
+    groupBy(data, x => x[prop]),
+    (records, key) => ({
+      id: label(records, key),
+      title: value(records, key),
     }),
   );
-};
+}
+
+
 
 /**
  * Collect collection and count data
@@ -94,7 +136,7 @@ const pivotTable = function (data: Array<{}>, prop?: string | Function, method?:
       const groupDataIterator = (groupData) => {
         groupsIndex++;
 
-        const groupResult = method(getCollectionProp(groupData, prop));
+        const groupResult = method(getCollectionProp(groupData, prop), groupData);
 
         let child;
 
