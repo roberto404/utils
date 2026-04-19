@@ -9,6 +9,7 @@ import PropTypes, { checkPropTypes } from '../propType';
 import Storage, { IMMORTAL_SESSIONTIME } from './storage';
 
 import capitalizeFirstLetter from '../string/capitalizeFirstLetter';
+import random from '../string/random';
 
 
 /* !- Constants */
@@ -92,6 +93,7 @@ export default (() => {
    * @private
    */
   const getDocumentConfig = () => {
+
     if (typeof document === 'undefined') {
       return {};
     }
@@ -176,7 +178,6 @@ export default (() => {
      * @public
      */
     const media = getMedia();
-
 
     return {
       lang,
@@ -291,12 +292,16 @@ export default (() => {
         this.store = settings.store;
       }
 
+      //@ todo opcions keep if immortal, ha immortal jön??????
       this.register = new Storage(
-        {},
+        {
+          immortal: true,
+        },
         {
           key: config.application ? config.application.id : undefined,
           password: config.application ? config.application.password : undefined,
           sessionTime: IMMORTAL_SESSIONTIME,
+          uuid: random(),
         },
       );
 
@@ -364,6 +369,16 @@ export default (() => {
      */
     getMedia(): string {
       return getMedia();
+    }
+
+    getDeviceFingerprint(): string {
+      return [
+        navigator.userAgent,
+        navigator.language,
+        screen.width + 'x' + screen.height,
+        Intl.DateTimeFormat().resolvedOptions().timeZone,
+        navigator.platform,
+      ].join('|');
     }
 
     static getOrientation(): string {

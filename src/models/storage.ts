@@ -13,6 +13,8 @@ import encrypt from '../string/encrypt';
 // 2KB
 import PropTypes, { checkPropTypes } from '../propType';
 
+import random from '../string/random';
+
 
 /* !- Constants */
 
@@ -26,6 +28,7 @@ export const MIN_TO_MSEC = 60 * 1000;
 type dataType =
   {
     timestamp?: number,
+    immortal?: boolean,
   };
 
 
@@ -100,7 +103,11 @@ export default (() => {
       }
 
       if (data) {
-        this.data = data;
+        this.add(data);
+      }
+
+      if (!this.data.uuid && settings.uuid) {
+        this.add({ uuid: settings.uuid });
       }
     }
 
@@ -308,8 +315,16 @@ export default (() => {
     * @return {boolean}
     */
     _validate(timestamp: number): boolean {
+
       if (isNaN(timestamp)) {
         return false;
+      }
+
+      const data = privateProps.get(this).data || {};
+
+      // 🔥 IMMORTAL
+      if (data.immortal === true) {
+        return true;
       }
 
       const now = new Date().getTime();
