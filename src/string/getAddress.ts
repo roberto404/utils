@@ -1,6 +1,11 @@
 
 const getAddress = ({ street, streetType, streetNo, building, staircase, floor, houseNumber }) => {
+
   const address = [[street, streetType, streetNo].filter(i => i).join(' ')];
+
+  if (!address[0]) {
+    return '';
+  }
 
   if (address[0].slice(-1) !== '.') {
     address[0] += '.';

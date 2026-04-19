@@ -18,9 +18,9 @@
  * roundDecimal(10, 1000)
  * // => 10
  */
-export const roundDecimal = (value: number, num: number, method: Function = Math.round) => method(value * num) / num;
-export const roundDecimalCeil = (value: number, num: number) => roundDecimal(value, num, Math.ceil);
-export const roundDecimalFloor = (value: number, num: number) => roundDecimal(value, num, Math.floor);
+export const roundDecimal = (value: number, num: number = 100, method: Function = Math.round) => method(value * num) / num;
+export const roundDecimalCeil = (value: number, num: number = 100) => roundDecimal(value, num, Math.ceil);
+export const roundDecimalFloor = (value: number, num: number = 100) => roundDecimal(value, num, Math.floor);
 
 /**
  * Interger number rounder
