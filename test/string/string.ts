@@ -10,6 +10,7 @@ import {
   formatThousand,
   random,
   decimalToRoman,
+  romanToDecimal,
   snakeToCamelCase,
 } from '../../src/string'
 
@@ -135,6 +136,25 @@ describe('decimalToRoman', () =>
   it('normal use', () =>
   {
     decimalToRoman(14).should.to.equal('XIV');
+  });
+});
+
+describe('romanToDecimal', () =>
+{
+  it('normal use', () =>
+  {
+    romanToDecimal('XIV').should.to.equal(14);
+    romanToDecimal('xiv').should.to.equal(14);
+    romanToDecimal('XIV.').should.to.equal(14);
+    romanToDecimal('IV...').should.to.equal(4);
+  });
+
+  it('invalid input', () =>
+  {
+    isNaN(romanToDecimal('')).should.to.be.true;
+    isNaN(romanToDecimal('FOO')).should.to.be.true;
+    isNaN(romanToDecimal('IM')).should.to.be.true;
+    isNaN(romanToDecimal(null)).should.to.be.true;
   });
 });
 

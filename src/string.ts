@@ -14,7 +14,7 @@ import formatThousand from './string/formatThousand';
 import random from './string/random';
 import urlQueryEncoder from './string/urlQueryEncoder';
 import urlQueryDencoder from './string/urlQueryDencoder';
-import decimalToRoman from './string/decimalToRoman';
+import decimalToRoman, { romanToDecimal } from './string/decimalToRoman';
 import snakeToCamelCase from './string/snakeToCamelCase';
 
 
@@ -31,6 +31,7 @@ export {
   urlQueryEncoder,
   urlQueryDencoder,
   decimalToRoman,
+  romanToDecimal,
   snakeToCamelCase,
 };
 
@@ -48,5 +49,6 @@ export default
   urlQueryEncoder,
   urlQueryDencoder,
   decimalToRoman,
+  romanToDecimal,
   snakeToCamelCase,
 };

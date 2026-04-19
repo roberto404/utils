@@ -16,6 +16,8 @@ const ROMAN_VALUES = {
   I: 1,
 };
 
+const NORMALIZED_ROMAN_REGEX = /^(M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3}))$/;
+
 /**
  * Convert decimal Number to Roman number
  * @param  {string|int} number decimal number
@@ -41,6 +43,48 @@ export const decimalToRoman = (number: number): string =>
   });
 
   return roman;
+};
+
+/**
+ * Convert Roman number to decimal Number
+ * @param  {string} roman Roman number
+ * @return {number}       decimal number or NaN
+ * @example
+ * romanToDecimal('XIV.')
+ * // => 14
+ */
+export const romanToDecimal = (roman: string): number =>
+{
+  if (typeof roman !== 'string')
+  {
+    return NaN;
+  }
+
+  const normalizedRoman = roman
+    .trim()
+    .replace(/\.+$/, '')
+    .toUpperCase();
+
+  if (!normalizedRoman || !NORMALIZED_ROMAN_REGEX.test(normalizedRoman))
+  {
+    return NaN;
+  }
+
+  let decimal = 0;
+  let currentRoman = normalizedRoman;
+
+  Object.keys(ROMAN_VALUES).forEach((romanNum) =>
+  {
+    const decimalNum = ROMAN_VALUES[romanNum];
+
+    while (currentRoman.startsWith(romanNum))
+    {
+      decimal += decimalNum;
+      currentRoman = currentRoman.substring(romanNum.length);
+    }
+  });
+
+  return decimal;
 };
 
 export default decimalToRoman;
