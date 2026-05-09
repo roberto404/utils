@@ -25,7 +25,7 @@ jobs:
           command: cp -r ./src/* ./ && rm -rf ./src
       - run:
           name: npm deploy
-          command: npx semantic-release
+          command: NPM_TOKEN=$TOKEN npx semantic-release
       # - run:
       #     name: Test
       #     command: npm run test
