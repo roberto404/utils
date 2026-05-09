@@ -8,6 +8,7 @@ import {
   encrypt,
   decrypt,
   formatThousand,
+  formatPhone,
   random,
   decimalToRoman,
   romanToDecimal,
@@ -119,6 +120,64 @@ describe('formatThousand', () =>
     formatThousand(1000000.25121).should.to.equal('1 000 000.25121');
     formatThousand(100).should.to.equal('100');
     formatThousand(1000000.25, '~').should.to.equal('1~000~000.25');
+  });
+});
+
+describe('formatPhone', () =>
+{
+  it('strips +36 country code by default', () =>
+  {
+    formatPhone('+36203539677').should.to.equal('20 353-9677');
+  });
+
+  it('strips 36 country code by default', () =>
+  {
+    formatPhone('36203539677').should.to.equal('20 353-9677');
+  });
+
+  it('strips 06 dial-out prefix', () =>
+  {
+    formatPhone('06203539677').should.to.equal('20 353-9677');
+  });
+
+  it('formats local number without prefix', () =>
+  {
+    formatPhone('203539677').should.to.equal('20 353-9677');
+  });
+
+  it('keeps country code when hideCountry is false', () =>
+  {
+    formatPhone('+36203539677', false).should.to.equal('+36 20 353-9677');
+    formatPhone('36203539677', false).should.to.equal('+36 20 353-9677');
+  });
+
+  it('does not prepend country code when input had none', () =>
+  {
+    formatPhone('203539677', false).should.to.equal('20 353-9677');
+  });
+
+  it('ignores spaces, dashes and other separators in input', () =>
+  {
+    formatPhone('+36 20 353-9677').should.to.equal('20 353-9677');
+    formatPhone('06-20-353-9677').should.to.equal('20 353-9677');
+    formatPhone('(+36) 20/353 9677').should.to.equal('20 353-9677');
+  });
+
+  it('accepts numeric input', () =>
+  {
+    formatPhone(36203539677).should.to.equal('20 353-9677');
+  });
+
+  it('returns empty string for empty/null/undefined', () =>
+  {
+    expect(formatPhone('')).to.equal('');
+    expect(formatPhone(null)).to.equal('');
+    expect(formatPhone(undefined)).to.equal('');
+  });
+
+  it('returns original input when too short to format', () =>
+  {
+    formatPhone('1234').should.to.equal('1234');
   });
 });
 

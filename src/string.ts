@@ -11,6 +11,7 @@ import slugify from './string/slugify';
 import toNumber from './string/toNumber';
 import wordWrap from './string/wordWrap';
 import formatThousand from './string/formatThousand';
+import formatPhone from './string/formatPhone';
 import random from './string/random';
 import urlQueryEncoder from './string/urlQueryEncoder';
 import urlQueryDencoder from './string/urlQueryDencoder';
@@ -28,6 +29,7 @@ export {
   wordWrap,
   random,
   formatThousand,
+  formatPhone,
   urlQueryEncoder,
   urlQueryDencoder,
   decimalToRoman,
@@ -46,6 +48,7 @@ export default
   wordWrap,
   random,
   formatThousand,
+  formatPhone,
   urlQueryEncoder,
   urlQueryDencoder,
   decimalToRoman,
