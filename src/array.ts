@@ -5,6 +5,11 @@
 
 import sum from './array/sum';
 import avg from './array/avg';
+import min from './array/min';
+import max from './array/max';
+import first from './array/first';
+import last from './array/last';
+import percentChange from './array/percentChange';
 import count from './array/count';
 import countUnique from './array/countUnique';
 import unique from './array/unique';
@@ -27,6 +32,11 @@ import detectArrayType from './array/detectArrayType';
 export {
   sum,
   avg,
+  min,
+  max,
+  first,
+  last,
+  percentChange,
   count,
   countUnique,
   unique,
@@ -49,6 +59,11 @@ export {
 export default {
   sum,
   avg,
+  min,
+  max,
+  first,
+  last,
+  percentChange,
   count,
   countUnique,
   unique,
