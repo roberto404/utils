@@ -13,6 +13,7 @@ import {
   decimalToRoman,
   romanToDecimal,
   snakeToCamelCase,
+  extractLabeledValues,
 } from '../../src/string'
 
 should();
@@ -232,5 +233,56 @@ describe('snakeToCamelCase', () =>
   it('PascalCase', () =>
   {
     snakeToCamelCase('lorem_ipsum', true).should.to.equal('LoremIpsum');
+  });
+});
+
+describe('extractLabeledValues', () =>
+{
+  const DESCRIPTION = 'Test színe: 116 KORPUSZ FEHÉR bútorlap ; Ajtó színe: 116 KORPUSZ FEHÉR bútorlap ; Fogó: R-19 (9,6) fogantyú; Kivetőpánt: GTV Kivetőpánt ráütődő /sima/; Ajtós-fiókos rész állása (szemből): Jobb oldali; ';
+
+  it('normal use', () =>
+  {
+    const result = extractLabeledValues(DESCRIPTION, ['Test színe', 'Fogó', 'Ajtós-fiókos rész állása (szemből)']);
+
+    expect(result.values).to.deep.equal({
+      'Test színe': '116 KORPUSZ FEHÉR bútorlap',
+      'Fogó': 'R-19 (9,6) fogantyú',
+      'Ajtós-fiókos rész állása (szemből)': 'Jobb oldali',
+    });
+    result.rest.should.to.equal('Ajtó színe: 116 KORPUSZ FEHÉR bútorlap; Kivetőpánt: GTV Kivetőpánt ráütődő /sima/');
+  });
+
+  it('keeps label order and fills missing labels with empty string', () =>
+  {
+    const result = extractLabeledValues(DESCRIPTION, ['Fióksín', 'Fogó']);
+
+    Object.keys(result.values).should.to.deep.equal(['Fióksín', 'Fogó']);
+    result.values['Fióksín'].should.to.equal('');
+  });
+
+  it('case and whitespace insensitive labels', () =>
+  {
+    extractLabeledValues('ajtó  SZÍNE : fehér', [' Ajtó színe'])
+      .values[' Ajtó színe'].should.to.equal('fehér');
+  });
+
+  it('value with delimiter and segment without label', () =>
+  {
+    const result = extractLabeledValues('Idő: 10:30; szabad szöveg', ['Idő']);
+
+    result.values['Idő'].should.to.equal('10:30');
+    result.rest.should.to.equal('szabad szöveg');
+  });
+
+  it('custom separator and delimiter', () =>
+  {
+    extractLabeledValues('a=1|b=2', ['b'], { separator: '|', delimiter: '=' })
+      .should.to.deep.equal({ values: { b: '2' }, rest: 'a=1' });
+  });
+
+  it('invalid input', () =>
+  {
+    extractLabeledValues(null, ['a']).should.to.deep.equal({ values: { a: '' }, rest: '' });
+    extractLabeledValues('a: 1', undefined).should.to.deep.equal({ values: {}, rest: 'a: 1' });
   });
 });

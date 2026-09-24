@@ -17,6 +17,7 @@ import urlQueryEncoder from './string/urlQueryEncoder';
 import urlQueryDencoder from './string/urlQueryDencoder';
 import decimalToRoman, { romanToDecimal } from './string/decimalToRoman';
 import snakeToCamelCase from './string/snakeToCamelCase';
+import extractLabeledValues from './string/extractLabeledValues';
 
 
 export {
@@ -35,6 +36,7 @@ export {
   decimalToRoman,
   romanToDecimal,
   snakeToCamelCase,
+  extractLabeledValues,
 };
 
 export default
@@ -54,4 +56,5 @@ export default
   decimalToRoman,
   romanToDecimal,
   snakeToCamelCase,
+  extractLabeledValues,
 };
