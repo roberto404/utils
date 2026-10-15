@@ -18,6 +18,8 @@ import urlQueryDencoder from './string/urlQueryDencoder';
 import decimalToRoman, { romanToDecimal } from './string/decimalToRoman';
 import snakeToCamelCase from './string/snakeToCamelCase';
 import extractLabeledValues from './string/extractLabeledValues';
+import { parseTemplate, stringifyTemplate } from './string/templateTokens';
+import diffWords from './string/diffWords';
 
 
 export {
@@ -37,6 +39,9 @@ export {
   romanToDecimal,
   snakeToCamelCase,
   extractLabeledValues,
+  parseTemplate,
+  stringifyTemplate,
+  diffWords,
 };
 
 export default
@@ -57,4 +62,7 @@ export default
   romanToDecimal,
   snakeToCamelCase,
   extractLabeledValues,
+  parseTemplate,
+  stringifyTemplate,
+  diffWords,
 };

@@ -44,6 +44,7 @@ const AVAILABLE_LISTENERS = [
   'orientation',
   'keydown',
   'click',
+  'focusin',
   'scroll',
   'wheel',
   'onscroll',

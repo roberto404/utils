@@ -14,6 +14,9 @@ import {
   romanToDecimal,
   snakeToCamelCase,
   extractLabeledValues,
+  parseTemplate,
+  stringifyTemplate,
+  diffWords,
 } from '../../src/string'
 
 should();
@@ -284,5 +287,107 @@ describe('extractLabeledValues', () =>
   {
     extractLabeledValues(null, ['a']).should.to.deep.equal({ values: { a: '' }, rest: '' });
     extractLabeledValues('a: 1', undefined).should.to.deep.equal({ values: {}, rest: 'a: 1' });
+  });
+});
+
+
+describe('parseTemplate / stringifyTemplate', () =>
+{
+  const TITLES = [
+    { id: '{features/10}', title: 'Szín' },
+    { id: '{dimension/w}', title: 'Szélesség' },
+  ];
+
+  it('variables, free texts, last text is the input string', () =>
+  {
+    parseTemplate('{features/10}, {features/35} cm', TITLES).should.to.deep.equal([
+      { id: '{features/10}', title: 'Szín' },
+      { text: ', ' },
+      { id: '{features/35}', title: '{features/35}' },
+      ' cm',
+    ]);
+  });
+
+  it('text glued to the variables', () =>
+  {
+    parseTemplate('matrac {dimension/w}x{dimension/d}', TITLES).should.to.deep.equal([
+      { text: 'matrac ' },
+      { id: '{dimension/w}', title: 'Szélesség' },
+      { text: 'x' },
+      { id: '{dimension/d}', title: '{dimension/d}' },
+    ]);
+  });
+
+  it('lossless round trip', () =>
+  {
+    [
+      '{features/10},  {features/35}, {features/55}',
+      'matrac {dimension/w}x{dimension/d} cm',
+      '{features/3} {features/1} {features/4} {features/7} ',
+      '{category}',
+      'csak szöveg',
+      '',
+    ].forEach((template) =>
+    {
+      stringifyTemplate(parseTemplate(template, TITLES)).should.to.equal(template);
+    });
+  });
+
+  it('invalid input', () =>
+  {
+    parseTemplate(null).should.to.deep.equal([]);
+    parseTemplate(undefined).should.to.deep.equal([]);
+    stringifyTemplate(undefined).should.to.equal('');
+    stringifyTemplate('{features/1}').should.to.equal('');
+  });
+});
+
+
+describe('diffWords', () =>
+{
+  const changed = tokens => tokens.filter(({ changed }) => changed).map(({ text }) => text);
+  const join = tokens => tokens.map(({ text }) => text).join('');
+
+  it('replaced word', () =>
+  {
+    const { removed, added, isChanged } = diffWords('matrac 80x200 cm, habszivacs', 'matrac 80x200 cm, kókusz');
+
+    changed(removed).should.to.deep.equal(['habszivacs']);
+    changed(added).should.to.deep.equal(['kókusz']);
+    isChanged.should.to.equal(true);
+  });
+
+  it('tokens give back the original texts', () =>
+  {
+    const oldText = 'sarokgarnitúra (világosszürke), rugós';
+    const newText = 'sarokgarnitúra (világos szürke) ágyneműtartós';
+    const { removed, added } = diffWords(oldText, newText);
+
+    join(removed).should.to.equal(oldText);
+    join(added).should.to.equal(newText);
+  });
+
+  it('punctuation is a separate token', () =>
+  {
+    const { removed, added } = diffWords('habszivacs,', 'habszivacs');
+
+    changed(removed).should.to.deep.equal([',']);
+    changed(added).should.to.deep.equal([]);
+  });
+
+  it('whitespace never changed', () =>
+  {
+    const { removed, added, isChanged } = diffWords('a  b', 'a b');
+
+    changed(removed).should.to.deep.equal([]);
+    changed(added).should.to.deep.equal([]);
+    isChanged.should.to.equal(false);
+  });
+
+  it('empty and invalid input', () =>
+  {
+    changed(diffWords('', 'új név').added).should.to.deep.equal(['új', 'név']);
+    changed(diffWords('régi', null).removed).should.to.deep.equal(['régi']);
+    diffWords(undefined, undefined).should.to.deep.equal({ removed: [], added: [], isChanged: false });
   });
 });
