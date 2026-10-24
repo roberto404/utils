@@ -27,6 +27,8 @@ import stdDev from './array/stdDev';
 import iqr from './array/iqr';
 import quartiles from './array/quartiles';
 import detectArrayType from './array/detectArrayType';
+import flattenTree from './array/flattenTree';
+import filterTree from './array/filterTree';
 
 
 export {
@@ -54,6 +56,8 @@ export {
   iqr,
   quartiles,
   detectArrayType,
+  flattenTree,
+  filterTree,
 };
 
 export default {
@@ -80,4 +84,6 @@ export default {
   iqr,
   quartiles,
   detectArrayType,
+  flattenTree,
+  filterTree,
 };
