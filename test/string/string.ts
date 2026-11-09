@@ -16,6 +16,8 @@ import {
   extractLabeledValues,
   parseTemplate,
   stringifyTemplate,
+  parseTemplateVariable,
+  stringifyTemplateVariable,
   diffWords,
 } from '../../src/string'
 
@@ -339,6 +341,33 @@ describe('parseTemplate / stringifyTemplate', () =>
     parseTemplate(undefined).should.to.deep.equal([]);
     stringifyTemplate(undefined).should.to.equal('');
     stringifyTemplate('{features/1}').should.to.equal('');
+  });
+
+  it('options filter of a variable', () =>
+  {
+    parseTemplate('{features/10:2,3} cm', TITLES).should.to.deep.equal([
+      { id: '{features/10}', title: 'Szín', options: ['2', '3'] },
+      ' cm',
+    ]);
+
+    stringifyTemplate([{ id: '{features/10}', title: 'Szín', options: ['2', '3'] }, ' cm'])
+      .should.to.equal('{features/10:2,3} cm');
+
+    stringifyTemplate([{ id: '{features/10}', title: 'Szín', options: [] }])
+      .should.to.equal('{features/10}');
+
+    ['{features/10:2,3}, {features/35}', '{features/10:1} {dimension/w}'].forEach((template) =>
+    {
+      stringifyTemplate(parseTemplate(template, TITLES)).should.to.equal(template);
+    });
+  });
+
+  it('parseTemplateVariable / stringifyTemplateVariable', () =>
+  {
+    parseTemplateVariable('{features/10:2,3}').should.to.deep.equal({ id: '{features/10}', options: ['2', '3'] });
+    parseTemplateVariable('{features/10}').should.to.deep.equal({ id: '{features/10}', options: [] });
+    stringifyTemplateVariable('{features/10}', [2, '3']).should.to.equal('{features/10:2,3}');
+    stringifyTemplateVariable('{features/10}').should.to.equal('{features/10}');
   });
 });
 
